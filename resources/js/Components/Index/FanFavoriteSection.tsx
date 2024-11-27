@@ -1,24 +1,21 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
+import { Idol } from '@/types/models';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-const idols = [
-    { name: "Lisa", group: "BLACKPINK", image: "https://i.pravatar.cc/300?img=1" },
-    { name: "V", group: "BTS", image: "https://i.pravatar.cc/300?img=2" },
-    { name: "Jisoo", group: "BLACKPINK", image: "https://i.pravatar.cc/300?img=3" },
-    { name: "Jungkook", group: "BTS", image: "https://i.pravatar.cc/300?img=4" },
-    { name: "Rose", group: "BLACKPINK", image: "https://i.pravatar.cc/300?img=5" },
-];
-
-export default function FanFavoritesSlider() {
+export default function FanFavoritesSlider({
+    spotlight,
+}: {
+    spotlight: Idol[];
+}) {
     return (
-        <section
-            className="mt-12 px-6 py-12 bg-gray-900 dark:bg-gray-100 text-center transition-colors duration-500"
-        >
-            <h2 className="text-3xl font-bold text-gray-100 dark:text-gray-900 mb-6">
+        <section className="mt-12 bg-gray-900 px-6 py-12 text-center transition-colors duration-500 dark:bg-gray-100">
+            <h2
+                className="mb-6 text-3xl font-bold text-gray-100 dark:text-gray-900"
+                aria-label="Fan Favorites"
+            >
                 Fan Favorites
             </h2>
             <Swiper
@@ -35,19 +32,22 @@ export default function FanFavoritesSlider() {
                 }}
                 className="pb-10"
             >
-                {idols.map((idol, index) => (
+                {spotlight.map((idol, index) => (
                     <SwiperSlide key={index}>
-                        <div className="bg-gray-800 dark:bg-gray-200 text-gray-300 dark:text-gray-800 rounded-lg shadow-lg hover:shadow-pink-500/50 dark:hover:shadow-pink-300/50 p-6 transition-transform transform hover:scale-105">
+                        <div
+                            className="transform rounded-lg bg-gray-800 p-6 text-gray-300 shadow-lg transition-transform hover:scale-105 hover:shadow-pink-500/50 dark:bg-gray-200 dark:text-gray-800 dark:hover:shadow-pink-300/50"
+                            aria-label={`Card for ${idol.name}`}
+                        >
                             <img
-                                src={idol.image}
-                                alt={idol.name}
-                                className="w-full h-40 object-cover rounded-lg shadow-md"
+                                src={idol.cover_photo}
+                                alt={`${idol.name} from ${idol.group.name}`}
+                                className="h-40 w-full rounded-lg object-cover shadow-md object-center"
                             />
-                            <h3 className="text-lg font-bold mt-4 text-gray-100 dark:text-gray-900">
+                            <h3 className="mt-4 text-lg font-bold text-gray-100 dark:text-gray-900">
                                 {idol.name}
                             </h3>
-                            <p className="text-sm text-gray-400 dark:text-gray-600 mt-2">
-                                {idol.group}
+                            <p className="mt-2 text-sm text-gray-400 dark:text-gray-600">
+                                {idol.group.name}
                             </p>
                         </div>
                     </SwiperSlide>

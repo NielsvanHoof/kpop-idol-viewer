@@ -15,6 +15,9 @@ export default function Footer() {
                     </span>
                     . All rights reserved.
                 </p>
+                <p className="text-xs mt-2 text-gray-400 dark:text-gray-600">
+                    Designed with ❤️ for all KPop fans worldwide.
+                </p>
             </div>
         </footer>
     );

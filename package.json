@@ -39,6 +39,7 @@
         "@heroicons/react": "^2.2.0",
         "motion": "^11.11.17",
         "react-simple-typewriter": "^5.0.1",
+        "remark": "^15.0.1",
         "swiper": "^11.1.15"
     }
 }

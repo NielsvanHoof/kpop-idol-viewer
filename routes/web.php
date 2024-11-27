@@ -1,21 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\IdolController;
+use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('welcome');
+Route::get('/', IndexController::class)->name('welcome');
 
-Route::get('/idols', function () {
-    return Inertia::render('Idol/overview');
-})->name('idols.overview');
+Route::resource('idols', IdolController::class);
 
-Route::get('/idols/{idol}', function () {
-    return Inertia::render('Idol/profile');
-})->name('idols.show');
+Route::resource('groups', GroupController::class);
 
 //Route::get('/dashboard', function () {
 //    return Inertia::render('Dashboard');
