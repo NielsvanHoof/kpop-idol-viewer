@@ -1,42 +1,59 @@
-import FanFavoritesSection from '@/Components/Index/FanFavoriteSection';
-import FAQ from '@/Components/Index/FaqItem';
-import FeaturesSection from '@/Components/Index/FeaturesSection';
-import HeroSection from '@/Components/Index/HeroSection';
-import LiveEventsSection from '@/Components/Index/LiveEventSection';
-import MerchSection from '@/Components/Index/MerchSection';
-import SpotifyPlaylistSection from '@/Components/Index/SpotifyPlayList';
-import SubscriptionSection from '@/Components/Index/SubscriptionSection';
-import Testimonials from '@/Components/Index/Testimonials';
-import Guest from '@/Layouts/GuestLayout';
-import { Idol } from '@/types/models';
-import { Head } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import LoadingSpinner from '@/Components/LoadingSpinner';
+import SEO from '@/Components/SEO';
+import SocialShare from '@/Components/SocialShare';
+import { useEffect, useState } from 'react';
 
-export default function Welcome({ spotlight }: { spotlight: Idol[] }) {
+// Import Swiper styles
+import FeatureSection from '@/Components/Index/FeatureSection';
+import HeroSection from '@/Components/Index/HeroSection';
+import LatestNewsSection from '@/Components/Index/LatestNewsSection';
+import NewsLetterSection from '@/Components/Index/NewsLetterSection';
+import PopulairIdols from '@/Components/Index/PopulairIdols';
+import MainLayout from '@/Layouts/MainLayout';
+import { Idol, Merchandise } from '@/types/models';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+export default function Welcome({
+    spotlight,
+    merch,
+}: {
+    spotlight: Idol[];
+    merch: Merchandise[];
+}) {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) return <LoadingSpinner />;
+
     return (
-        <Guest>
-            <Head title="KPop Universe" />
-            <div className="relative mt-12 min-h-screen overflow-hidden bg-gray-900 text-gray-200 transition-colors duration-500 dark:bg-gray-100 dark:text-gray-800">
-                <motion.div
-                    className="absolute left-10 top-10 h-32 w-32 rounded-full bg-gray-700 opacity-40 blur-3xl dark:bg-gray-300 dark:opacity-20"
-                    animate={{ x: [0, 100, -50, 0], y: [0, -50, 50, 0] }}
-                    transition={{ duration: 12, repeat: Infinity }}
-                />
-                <motion.div
-                    className="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-gray-600 opacity-30 blur-3xl dark:bg-gray-400 dark:opacity-20"
-                    animate={{ x: [0, -100, 50, 0], y: [0, 50, -50, 0] }}
-                    transition={{ duration: 15, repeat: Infinity }}
-                />
-                <HeroSection />
-                <FeaturesSection />
-                <FanFavoritesSection spotlight={spotlight} />
-                <LiveEventsSection />
-                <SpotifyPlaylistSection />
-                <Testimonials />
-                <FAQ />
-                <MerchSection />
-                <SubscriptionSection />
-            </div>
-        </Guest>
+        <MainLayout>
+            <SEO
+                title="KPOP Project - Your Ultimate K-pop Destination"
+                description="Discover the latest K-pop news, music, and exclusive content."
+            />
+            <SocialShare />
+
+            {/* Hero Section */}
+            <HeroSection />
+
+            {/* Popular Idols Section */}
+            <PopulairIdols spotlight={spotlight} />
+
+            {/* Features Section */}
+            <FeatureSection />
+
+            {/* Latest News Section */}
+            <LatestNewsSection />
+
+            {/* Newsletter Section */}
+            <NewsLetterSection />
+        </MainLayout>
     );
 }

@@ -16,12 +16,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
             'location' => $this->location,
             'date' => $this->date,
             'venue' => $this->venue,
-            'idol_id' => $this->idol_id,
-            'group_id' => $this->group_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'media_count' => $this->media_count,
-            'registerMediaConversionsUsingModelInstance' => $this->registerMediaConversionsUsingModelInstance,
+
+            'group' => new GroupResource($this->whenLoaded('group')),
+            'idols' => IdolResource::collection($this->whenLoaded('idols')),
         ];
     }
 }

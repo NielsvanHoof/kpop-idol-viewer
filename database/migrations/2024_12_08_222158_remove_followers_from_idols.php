@@ -8,13 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('idols', function (Blueprint $table) {});
+        Schema::table('idols', function (Blueprint $table) {
+            $table->dropColumn('followers');
+        });
     }
 
     public function down(): void
     {
         Schema::table('idols', function (Blueprint $table) {
-            //
+            $table->integer('followers')->default(0);
         });
     }
 };

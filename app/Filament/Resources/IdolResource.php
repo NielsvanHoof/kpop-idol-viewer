@@ -3,13 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\IdolResource\Pages;
-use App\Models\Group;
 use App\Models\Idol;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -55,13 +55,21 @@ class IdolResource extends Resource
                         TextInput::make('name')
                             ->label('Idol Name')
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                                if (!$get('is_slug_changed_manually') && filled($state)) {
+                                if (! $get('is_slug_changed_manually') && filled($state)) {
                                     $set('slug', Str::slug($state));
                                 }
                             })
                             ->reactive()
                             ->required()
                             ->placeholder('Enter the idol’s name'),
+
+                        TextInput::make('stage_name')
+                            ->label('Stage Name')
+                            ->placeholder('Enter the idols stage name'),
+
+                        TextInput::make('position')
+                            ->label('Position')
+                            ->placeholder('Enter the idols position in the group'),
 
                         TextInput::make('slug')
                             ->label('Slug')
@@ -70,10 +78,10 @@ class IdolResource extends Resource
                             })
                             ->required()
                             ->placeholder('Generated automatically from the name'),
-
                         Hidden::make('is_slug_changed_manually')
                             ->default(false)
                             ->dehydrated(false),
+
                     ])
                     ->collapsible(),
 
@@ -124,20 +132,31 @@ class IdolResource extends Resource
                     ])
                     ->columns(1),
 
-                // Followers and Stats
-                Section::make('Statistics')
-                    ->icon('heroicon-o-chart-pie')
+                // Social Media Section
+                Section::make('Social Media')
+                    ->icon('heroicon-o-share')
                     ->schema([
-                        TextInput::make('followers')
-                            ->label('Followers')
-                            ->required()
-                            ->integer()
-                            ->placeholder('Enter the total number of followers'),
-
-                        Select::make('group_id')
-                            ->label('Group')
-                            ->relationship('group', 'name')
-                            ->searchable(),
+                        Repeater::make('social_links')
+                            ->schema([
+                                Select::make('platform')
+                                    ->options([
+                                        'twitter' => 'Twitter',
+                                        'instagram' => 'Instagram',
+                                        'youtube' => 'YouTube',
+                                        'facebook' => 'Facebook',
+                                        'tiktok' => 'TikTok',
+                                    ])
+                                    ->required(),
+                                TextInput::make('url')
+                                    ->url()
+                                    ->required()
+                                    ->placeholder('https://'),
+                            ])
+                            ->columns(2)
+                            ->defaultItems(0)
+                            ->reorderable(false)
+                            ->createItemButtonLabel('Add Social Link')
+                            ->collapsible(),
                     ])
                     ->collapsible(),
 
@@ -146,11 +165,11 @@ class IdolResource extends Resource
                     ->schema([
                         Placeholder::make('created_at')
                             ->label('Created Date')
-                            ->content(fn(?Idol $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Idol $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                         Placeholder::make('updated_at')
                             ->label('Last Modified Date')
-                            ->content(fn(?Idol $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Idol $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])
                     ->collapsible(),
             ]);
@@ -164,6 +183,13 @@ class IdolResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('stage_name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('position')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('debute_date')
                     ->date(),
@@ -216,15 +242,20 @@ class IdolResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'group.name'];
+        return ['name', 'stage_name', 'position', 'group.name'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         $details = [];
 
-
         if ($record instanceof Idol) {
+            if ($record->stage_name) {
+                $details['stage name'] = $record->stage_name;
+            }
+            if ($record->position) {
+                $details['position'] = $record->position;
+            }
             if ($record->group) {
                 $details['group'] = $record->group->name;
             }

@@ -22,10 +22,17 @@ export interface Idol {
     debute_date: string;
     birth_date: string;
     active: boolean;
+    position: string;
+    stage_name: string;
     cover_photo: string;
+    rating: number;
+    spotify_id: string;
     gallery: string[];
     followers: number;
-    social_links: string;
+    social_links: {
+        platform: string;
+        url: string;
+    };
     created_at: string;
     updated_at: string;
     group: Group;
@@ -40,7 +47,8 @@ export interface Group {
     active: boolean;
     slug: string;
     cover_photo: string;
-    debut_date: string;
+    spotify_id: string;
+    debute_date: string;
     idols_count: number | null;
     events_count: number | null;
     social_links: string;
@@ -58,6 +66,19 @@ export interface Merchandise {
     price: number;
     available: boolean;
     release_date: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Event {
+    id: number;
+    name: string;
+    location: {
+        lat: number;
+        lng: number;
+    } | null;
+    date: string;
+    venue: string;
     created_at: string;
     updated_at: string;
 }

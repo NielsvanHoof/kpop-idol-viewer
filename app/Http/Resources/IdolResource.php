@@ -19,6 +19,9 @@ class IdolResource extends JsonResource
             'slug' => $this->slug,
             'debute_date' => $this->debute_date,
             'birth_date' => $this->birth_date,
+            'position' => $this->position,
+            'stage_name' => $this->stage_name,
+            'spotify_id' => $this->spotify_id,
             'active' => $this->active,
             'followers' => $this->followers,
             'social_links' => $this->social_links,
@@ -31,6 +34,7 @@ class IdolResource extends JsonResource
 
             'group' => new GroupResource($this->whenLoaded('group')),
             'merchandises' => MerchandiseResource::collection($this->whenLoaded('merchandises')),
+            'events' => EventResource::collection($this->whenLoaded('events')),
         ];
     }
 }

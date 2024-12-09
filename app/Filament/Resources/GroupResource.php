@@ -70,6 +70,11 @@ class GroupResource extends Resource
                         Hidden::make('is_slug_changed_manually')
                             ->default(false)
                             ->dehydrated(false),
+
+                        TextInput::make('spotify_id')
+                            ->label('Spotify ID')
+                            ->placeholder('Enter the Spotify ID')
+                            ->helperText('The unique identifier from Spotify'),
                     ])
                     ->collapsible(),
 

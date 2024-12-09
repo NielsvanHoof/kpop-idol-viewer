@@ -13,12 +13,21 @@ class GroupController extends Controller
     {
         $groups = Group::query()
             ->withCount(['idols', 'events'])
-            ->cursorPaginate(
+            ->paginate(
                 perPage: $request->input('perPage', 10),
             );
 
-        return Inertia::render('Group/overview', [
-            'initialGroups' => GroupResource::collection($groups),
+        return Inertia::render('Group/group.overview', [
+            'groups' => GroupResource::collection($groups),
+        ]);
+    }
+
+    public function show(Group $group)
+    {
+        $group->load(['idols.followers', 'events']);
+
+        return Inertia::render('Group/group.profile', [
+            'group' => GroupResource::make($group),
         ]);
     }
 }

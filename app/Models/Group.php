@@ -19,7 +19,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -31,6 +31,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property string $slug
+ * @property string|null $spotify_id
  * @property-read Collection<int, Event> $events
  * @property-read int|null $events_count
  * @property-read Collection<int, Idol> $idols
@@ -56,11 +57,14 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read mixed $cover_photo
  * @property-read Collection<int, Merchandise> $merchandises
  * @property-read int|null $merchandises_count
+ * @property-read Collection<int, Follower> $followers
+ * @property-read int|null $followers_count
+ * @method static Builder<static>|Group whereSpotifyId($value)
  * @mixin Eloquent
  */
 class Group extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasSlug;
+    use HasSlug, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -69,6 +73,7 @@ class Group extends Model implements HasMedia
         'debute_date',
         'social_links',
         'slug',
+        'spotify_id',
     ];
 
     protected function casts(): array
@@ -80,12 +85,10 @@ class Group extends Model implements HasMedia
         ];
     }
 
-
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
-
 
     public function getSlugOptions(): SlugOptions
     {
@@ -98,7 +101,7 @@ class Group extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn($value, array $attributes) => $this->getFirstMediaUrl('cover_photos'),
+            get: fn ($value, array $attributes) => $this->getFirstMediaUrl('cover_photos'),
         );
     }
 
@@ -115,5 +118,10 @@ class Group extends Model implements HasMedia
     public function merchandises(): MorphMany
     {
         return $this->morphMany(Merchandise::class, 'merchandiseable');
+    }
+
+    public function followers(): MorphMany
+    {
+        return $this->morphMany(Follower::class, 'followable');
     }
 }

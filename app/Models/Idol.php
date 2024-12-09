@@ -27,7 +27,6 @@ use Spatie\Sluggable\SlugOptions;
  * @property string|null $bio
  * @property Carbon $debute_date
  * @property bool $active
- * @property int $followers
  * @property array|null $social_links
  * @property int|null $group_id
  * @property Carbon|null $created_at
@@ -39,6 +38,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read Collection<int, Event> $events
  * @property-read int|null $events_count
  * @property-read mixed $gallery
+ * @property-read mixed $rating
  * @property-read Group|null $group
  * @property-read MediaCollection<int, Media> $media
  * @property-read int|null $media_count
@@ -52,7 +52,6 @@ use Spatie\Sluggable\SlugOptions;
  * @method static Builder<static>|Idol whereCreatedAt($value)
  * @method static Builder<static>|Idol whereDebuteDate($value)
  * @method static Builder<static>|Idol whereDeletedAt($value)
- * @method static Builder<static>|Idol whereFollowers($value)
  * @method static Builder<static>|Idol whereGroupId($value)
  * @method static Builder<static>|Idol whereId($value)
  * @method static Builder<static>|Idol whereName($value)
@@ -63,22 +62,32 @@ use Spatie\Sluggable\SlugOptions;
  * @method static Builder<static>|Idol withoutTrashed()
  * @property-read Collection<int, Merchandise> $merchandises
  * @property-read int|null $merchandises_count
+ * @property string|null $stage_name
+ * @property string|null $position
+ * @property string|null $spotify_id
+ * @method static Builder<static>|Idol wherePosition($value)
+ * @method static Builder<static>|Idol whereStageName($value)
+ * @method static Builder<static>|Idol whereSpotifyId($value)
+ * @property-read Collection<int, Follower> $followers
+ * @property-read int|null $followers_count
  * @mixin Eloquent
  */
 class Idol extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasSlug;
+    use HasSlug, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',
+        'stage_name',
+        'position',
         'bio',
         'debute_date',
         'active',
-        'followers',
         'social_links',
         'group_id',
         'slug',
-        'birth_date'
+        'birth_date',
+        'spotify_id',
     ];
 
     protected function casts(): array
@@ -87,7 +96,7 @@ class Idol extends Model implements HasMedia
             'debute_date' => 'date',
             'birth_date' => 'date',
             'active' => 'boolean',
-            'social_links' => 'array',
+            'social_links' => 'json',
         ];
     }
 
@@ -100,7 +109,7 @@ class Idol extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn($value, array $attributes) => $this->getFirstMediaUrl('cover_photos'),
+            get: fn () => $this->getFirstMediaUrl('cover_photos'),
         );
     }
 
@@ -108,9 +117,17 @@ class Idol extends Model implements HasMedia
     protected function gallery(): Attribute
     {
         return Attribute::make(
-            get: fn($value, array $attributes) => $this->getMedia('gallery')->map(fn($media) => $media->getUrl()),
+            get: fn () => $this->getMedia('gallery')->map(fn ($media) => $media->getUrl()),
         );
     }
+    //
+    //    /** @return Attribute<int, never> */
+    //    protected function rating(): Attribute
+    //    {
+    //        return Attribute::make(
+    //            get: fn () => ($this->followers + $this->load('events')->events->count()) / 2,
+    //        );
+    //    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -132,5 +149,10 @@ class Idol extends Model implements HasMedia
     public function merchandises(): MorphMany
     {
         return $this->morphMany(Merchandise::class, 'merchandiseable');
+    }
+
+    public function followers(): MorphMany
+    {
+        return $this->morphMany(Follower::class, 'followable');
     }
 }

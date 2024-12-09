@@ -1,19 +1,35 @@
-import { Button } from "@headlessui/react";
+import { ArrowUpIcon } from '@heroicons/react/16/solid';
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
+import { useEffect, useState } from 'react';
 
 export default function ScrollToTop() {
-    const scrollToTop = () =>
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
+    const [isVisible, setIsVisible] = useState(false);
+
+    // Show the button when the user scrolls down
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsVisible(window.scrollY > 200);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
-        <Button
-            onClick={scrollToTop}
-            className="fixed bottom-4 right-4 bg-pink-500 text-white p-4 rounded-full shadow-lg hover:scale-110 hover:shadow-pink-400 focus:outline-none focus:ring-4 focus:ring-pink-500/50 transition-transform z-50"
-            aria-label="Scroll to top"
-        >
-            ↑
-        </Button>
+        <AnimatePresence>
+            {isVisible && (
+                <motion.button
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    onClick={() =>
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }
+                    className="fixed bottom-4 right-4 z-50 rounded-full bg-purple-600 p-3 text-white shadow-lg transition-colors hover:bg-purple-700"
+                >
+                    <ArrowUpIcon className="h-6 w-6" />
+                </motion.button>
+            )}
+        </AnimatePresence>
     );
 }

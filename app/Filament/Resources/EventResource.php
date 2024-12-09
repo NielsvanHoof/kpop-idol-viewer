@@ -42,6 +42,21 @@ class EventResource extends Resource
 
                 TextInput::make('venue'),
 
+                TextInput::make('location')
+                    ->label('Location')
+                    ->hint('Enter coordinates (latitude,longitude)')
+                    ->afterStateHydrated(function (TextInput $component, ?array $state) {
+                        if ($state) {
+                            $component->state(implode(',', [$state['lat'], $state['lng']]));
+                        }
+                    })
+                    ->beforeStateDehydrated(function (?string $state, callable $set) {
+                        if ($state) {
+                            [$lat, $lng] = explode(',', $state);
+                            $set('location', ['lat' => (float) $lat, 'lng' => (float) $lng]);
+                        }
+                    }),
+
                 Placeholder::make('created_at')
                     ->label('Created Date')
                     ->content(fn(?Event $record): string => $record?->created_at?->diffForHumans() ?? '-'),

@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->text('bio')->nullable();
             $table->date('debute_date');
             $table->boolean('active');
-            $table->unsignedBigInteger('followers');
             $table->jsonb('social_links')->nullable();
             $table->foreignIdFor(Group::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();

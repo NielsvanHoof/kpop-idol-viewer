@@ -17,6 +17,7 @@ class GroupResource extends JsonResource
             'bio' => $this->bio,
             'active' => $this->active,
             'slug' => $this->slug,
+            'spotify_id' => $this->spotify_id,
             'debute_date' => $this->debute_date,
             'social_links' => $this->social_links,
             'created_at' => $this->created_at,
