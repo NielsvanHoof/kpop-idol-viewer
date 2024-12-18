@@ -1,5 +1,5 @@
-import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { MoonIcon, SunIcon } from 'lucide-react';
 
 interface ThemeToggleProps {
     theme: string;

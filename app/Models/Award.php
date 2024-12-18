@@ -6,16 +6,9 @@ use App\Enums\EventTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Awards extends Model
+class Award extends Model
 {
-    protected $fillable = [
-        'name',
-        'description',
-        'from',
-        'type',
-        'awardable_id',
-        'awardable_type',
-    ];
+    protected $guarded = [];
 
     protected function casts(): array
     {

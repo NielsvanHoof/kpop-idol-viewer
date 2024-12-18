@@ -2,10 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\EventTypes;
 use App\Filament\Resources\EventResource\Pages;
 use App\Models\Event;
+use App\Models\Group;
+use App\Models\Idol;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -35,35 +40,66 @@ class EventResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required(),
+                Section::make('Basic Details')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Event Name')
+                            ->required()
+                            ->placeholder('Enter event name'),
 
-                DatePicker::make('date'),
+                        Select::make('type')
+                            ->label('Type')
+                            ->options(EventTypes::class)
+                            ->placeholder('Select type')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->native(false),
+                        TextInput::make('location')
+                            ->label('Location')
+                            ->hint('Enter coordinates (latitude,longitude)')
+                            ->afterStateHydrated(function (TextInput $component, ?array $state) {
+                                if ($state) {
+                                    $component->state(implode(',', [$state['lat'], $state['lng']]));
+                                }
+                            })
+                            ->beforeStateDehydrated(function (?string $state, callable $set) {
+                                if ($state) {
+                                    [$lat, $lng] = explode(',', $state);
+                                    $set('location', ['lat' => (float) $lat, 'lng' => (float) $lng]);
+                                }
+                            }),
 
-                TextInput::make('venue'),
+                        DatePicker::make('date')
+                            ->label('Date')
+                            ->placeholder('Select date'),
 
-                TextInput::make('location')
-                    ->label('Location')
-                    ->hint('Enter coordinates (latitude,longitude)')
-                    ->afterStateHydrated(function (TextInput $component, ?array $state) {
-                        if ($state) {
-                            $component->state(implode(',', [$state['lat'], $state['lng']]));
-                        }
-                    })
-                    ->beforeStateDehydrated(function (?string $state, callable $set) {
-                        if ($state) {
-                            [$lat, $lng] = explode(',', $state);
-                            $set('location', ['lat' => (float) $lat, 'lng' => (float) $lng]);
-                        }
-                    }),
+                        TextInput::make('venue')
+                            ->label('Venue')
+                            ->placeholder('Enter venue name'),
+                    ])
+                    ->collapsible(),
 
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn(?Event $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn(?Event $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                Section::make('Associations')
+                    ->icon('heroicon-o-link')
+                    ->schema([
+                        MorphToSelect::make('eventable')
+                            ->types([
+                                MorphToSelect\Type::make(Idol::class)
+                                    ->titleAttribute('name')
+                                    ->label('Idol'),
+                                MorphToSelect\Type::make(Group::class)
+                                    ->titleAttribute('name')
+                                    ->label('Group'),
+                            ])
+                            ->label('Associated Entity')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ])
+                    ->collapsible()
+                    ->columns(2),
             ]);
     }
 
@@ -74,8 +110,6 @@ class EventResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('location'),
 
                 TextColumn::make('date')
                     ->date(),

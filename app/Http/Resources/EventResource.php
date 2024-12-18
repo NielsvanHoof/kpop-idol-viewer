@@ -15,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
             'name' => $this->name,
             'location' => $this->location,
             'date' => $this->date,
+            'type' => $this->type,
             'venue' => $this->venue,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

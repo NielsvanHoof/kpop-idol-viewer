@@ -1,147 +1,161 @@
-import GroupProfileMembersPanel from '@/Components/groups/profile/GroupProfileMembersPanel';
-import GroupProfileOverViewPanel from '@/Components/groups/profile/GroupProfileOverViewPanel';
-import LoadingSpinner from '@/Components/LoadingSpinner';
-import SEO from '@/Components/SEO';
+import GroupProfileAwardsPanel from '@/Components/Groups/Profile/GroupProfileAwardsPanel';
+import GroupProfileDiscoveryPanel from '@/Components/Groups/Profile/GroupProfileDiscoveryPanel';
+import GroupProfileEventPanel from '@/Components/Groups/Profile/GroupProfileEventPanel';
+import GroupProfileGalleryPanel from '@/Components/Groups/Profile/GroupProfileGalleryPanel';
+import GroupProfileHeroSection from '@/Components/Groups/Profile/GroupProfileHeroSection';
+import GroupProfileMembersPanel from '@/Components/Groups/Profile/GroupProfileMembersPanel';
+import GroupProfileOverViewPanel from '@/Components/Groups/Profile/GroupProfileOverViewPanel';
+import SEO from '@/Components/Common/SEO';
 import MainLayout from '@/Layouts/MainLayout';
 import { Group } from '@/types/models';
+import {
+    SpotifyAlbumsResponse,
+    SpotifyArtistInformationResponse,
+} from '@/types/spotify';
 import { Tab, TabGroup, TabList, TabPanels } from '@headlessui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     CalendarIcon,
-    ChartBarIcon,
-    MusicalNoteIcon,
-    PhotoIcon,
+    CameraIcon,
+    MusicIcon,
+    SparklesIcon,
     TrophyIcon,
     UsersIcon,
-} from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+} from 'lucide-react';
+import { useState } from 'react';
 
 const tabs = [
     {
         name: 'Overview',
-        icon: <ChartBarIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        icon: <SparklesIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: null,
     },
-    { name: 'Members', icon: <UsersIcon className="h-4 w-4 sm:h-5 sm:w-5" /> },
+    {
+        name: 'Members',
+        icon: <UsersIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: (group: Group) => group.idols_count || 0,
+    },
     {
         name: 'Discography',
-        icon: <MusicalNoteIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        icon: <MusicIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: (group: Group, songs: SpotifyAlbumsResponse | null) =>
+            songs?.items?.filter((item) => item.album_type === 'album')
+                .length || 0,
     },
-    { name: 'Gallery', icon: <PhotoIcon className="h-4 w-4 sm:h-5 sm:w-5" /> },
+    {
+        name: 'Gallery',
+        icon: <CameraIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: (group: Group) => group.gallery_count || 0,
+    },
     {
         name: 'Events',
         icon: <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: (group: Group) => group.events_count || 0,
     },
-    { name: 'Awards', icon: <TrophyIcon className="h-4 w-4 sm:h-5 sm:w-5" /> },
+    {
+        name: 'Awards',
+        icon: <TrophyIcon className="h-4 w-4 sm:h-5 sm:w-5" />,
+        count: (group: Group) => group.awards_count || 0,
+    },
 ];
 
-export default function GroupProfile({ group }: { group: Group }) {
+const tabVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (index: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            delay: index * 0.05,
+        },
+    }),
+};
+
+interface GroupProfileProps {
+    group: Group;
+    songs: SpotifyAlbumsResponse | null;
+    artistInformation: SpotifyArtistInformationResponse | null;
+}
+
+export default function GroupProfile({
+    group,
+    songs,
+    artistInformation,
+}: GroupProfileProps) {
     const [activeTab, setActiveTab] = useState(0);
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) return <LoadingSpinner />;
 
     return (
         <MainLayout>
             <SEO
-                title={`${group.name} | KPOP Project`}
-                description={`Learn about ${group.name}, their music, members, and achievements.`}
+                title={`${group.name} Profile | KPOP Project`}
+                description={`Learn more about ${group.name}, their music, members, and achievements`}
             />
 
-            {/* Hero Section with Video Background */}
-            <section className="relative h-[70vh] overflow-hidden">
-                <div className="absolute inset-0 bg-black/50">
-                    {/* <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="h-full w-full object-cover"
-                    >
-                        <source src={group.promo_video} type="video/mp4" />
-                    </video> */}
-                </div>
+            <GroupProfileHeroSection group={group} />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-                        <div className="mx-auto max-w-7xl">
-                            <motion.div
-                                animate={{ opacity: 1, y: 0 }}
-                                className="flex flex-col items-start gap-6"
-                            >
-                                <div className="flex flex-col gap-4">
-                                    <span className="rounded-full bg-purple-600/80 px-4 py-1 text-sm font-medium text-white backdrop-blur-sm">
-                                        GIRL GROUP
-                                    </span>
-                                    <h1 className="text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-                                        {group.name}
-                                    </h1>
-                                    <p className="text-lg text-gray-300">
-                                        Debut{' '}
-                                        {new Date(
-                                            group.debute_date,
-                                        ).getFullYear()}
-                                    </p>
-                                </div>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <div className="sticky top-16 z-30 bg-white/80 shadow-sm backdrop-blur-sm dark:bg-gray-900/80">
+                    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                        <TabGroup
+                            selectedIndex={activeTab}
+                            onChange={setActiveTab}
+                        >
+                            <TabList className="flex min-w-full space-x-1 overflow-x-auto py-2 sm:py-4">
+                                {tabs.map((tab, index) => (
+                                    <motion.div
+                                        key={tab.name}
+                                        custom={index}
+                                        initial="hidden"
+                                        animate="visible"
+                                        variants={tabVariants}
+                                    >
+                                        <Tab
+                                            className={({ selected }) =>
+                                                `group flex shrink-0 items-center space-x-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all sm:space-x-2 sm:px-4 sm:py-2.5 sm:text-sm ${
+                                                    selected
+                                                        ? 'bg-purple-600 text-white'
+                                                        : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-purple-400'
+                                                }`
+                                            }
+                                        >
+                                            {tab.icon}
+                                            <span className="whitespace-nowrap">
+                                                {tab.name}
+                                            </span>
+                                            {tab.count && (
+                                                <span
+                                                    className={`ml-1.5 rounded-full px-2 py-0.5 text-xs ${
+                                                        activeTab === index
+                                                            ? 'bg-white/20 text-white'
+                                                            : 'bg-gray-100 text-gray-600 group-hover:bg-purple-100 group-hover:text-purple-600 dark:bg-gray-800 dark:text-gray-400'
+                                                    }`}
+                                                >
+                                                    {tab.count(group, songs)}
+                                                </span>
+                                            )}
+                                        </Tab>
+                                    </motion.div>
+                                ))}
+                            </TabList>
 
-                                <div className="flex flex-wrap gap-4">
-                                    <div className="flex items-center gap-2 text-white">
-                                        <UsersIcon className="h-5 w-5" />
-                                        <span>{group.idols_count} Members</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <MusicalNoteIcon className="h-5 w-5" />
-                                        <span>10 Albums</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <TrophyIcon className="h-5 w-5" />
-                                        <span>4 Awards</span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
+                            <AnimatePresence mode="wait">
+                                <TabPanels className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                                    <GroupProfileOverViewPanel
+                                        group={group}
+                                        songs={songs}
+                                    />
+                                    <GroupProfileMembersPanel group={group} />
+                                    <GroupProfileDiscoveryPanel
+                                        group={group}
+                                        songs={songs}
+                                        artistInformation={artistInformation}
+                                    />
+                                    <GroupProfileGalleryPanel group={group} />
+                                    <GroupProfileEventPanel group={group} />
+                                    <GroupProfileAwardsPanel group={group} />
+                                </TabPanels>
+                            </AnimatePresence>
+                        </TabGroup>
                     </div>
-                </div>
-            </section>
-
-            {/* Tab Navigation */}
-            <div className="bg-white/80 shadow-sm backdrop-blur-sm dark:bg-gray-900/80">
-                <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-                    <TabGroup selectedIndex={activeTab} onChange={setActiveTab}>
-                        <TabList className="flex min-w-full space-x-1 overflow-x-auto py-2 sm:py-4">
-                            {tabs.map((tab) => (
-                                <Tab
-                                    key={tab.name}
-                                    className={({ selected }) =>
-                                        `flex shrink-0 items-center space-x-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all sm:space-x-2 sm:px-4 sm:py-2.5 sm:text-sm ${
-                                            selected
-                                                ? 'bg-purple-600 text-white'
-                                                : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600 dark:text-gray-400'
-                                        }`
-                                    }
-                                >
-                                    {tab.icon}
-                                    <span className="whitespace-nowrap">
-                                        {tab.name}
-                                    </span>
-                                </Tab>
-                            ))}
-                        </TabList>
-
-                        {/* Tab Panels will go here */}
-                        <TabPanels className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                            {/* Overview Panel */}
-                            <GroupProfileOverViewPanel group={group} />
-
-                            {/* Members Panel */}
-                            <GroupProfileMembersPanel group={group} />
-                        </TabPanels>
-                    </TabGroup>
                 </div>
             </div>
         </MainLayout>

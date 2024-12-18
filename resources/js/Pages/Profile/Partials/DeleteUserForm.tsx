@@ -1,4 +1,5 @@
 import {
+    Description,
     Dialog,
     DialogPanel,
     DialogTitle,
@@ -104,13 +105,13 @@ export default function DeleteUserForm({
                                         Are you sure you want to delete your
                                         account?
                                     </DialogTitle>
-                                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <Description className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                         Once your account is deleted, all of its
                                         resources and data will be permanently
                                         deleted. Please enter your password to
                                         confirm you would like to permanently
                                         delete your account.
-                                    </p>
+                                    </Description>
 
                                     <form
                                         onSubmit={deleteUser}

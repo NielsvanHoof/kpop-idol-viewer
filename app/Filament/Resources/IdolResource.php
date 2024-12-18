@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\MediaTypes;
 use App\Filament\Resources\IdolResource\Pages;
+use App\Models\Group;
 use App\Models\Idol;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -63,6 +65,14 @@ class IdolResource extends Resource
                             ->required()
                             ->placeholder('Enter the idol’s name'),
 
+                        TextInput::make('slug')
+                            ->label('Slug')
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('is_slug_changed_manually', true);
+                            })
+                            ->required()
+                            ->placeholder('Generated automatically from the name'),
+
                         TextInput::make('stage_name')
                             ->label('Stage Name')
                             ->placeholder('Enter the idols stage name'),
@@ -71,16 +81,27 @@ class IdolResource extends Resource
                             ->label('Position')
                             ->placeholder('Enter the idols position in the group'),
 
-                        TextInput::make('slug')
-                            ->label('Slug')
-                            ->afterStateUpdated(function (Set $set) {
-                                $set('is_slug_changed_manually', true);
-                            })
-                            ->required()
-                            ->placeholder('Generated automatically from the name'),
+                        Select::make('gender')
+                            ->options([
+                                'male' => 'Male',
+                                'female' => 'Female',
+                            ])
+                            ->required(),
+
                         Hidden::make('is_slug_changed_manually')
                             ->default(false)
                             ->dehydrated(false),
+
+                        Select::make('group_id')
+                            ->label('Group')
+                            ->options(Group::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload(),
+
+                        TextInput::make('spotify_id')
+                            ->label('Spotify ID')
+                            ->placeholder('Enter the Spotify ID')
+                            ->helperText('The unique identifier from Spotify'),
 
                     ])
                     ->collapsible(),
@@ -122,13 +143,21 @@ class IdolResource extends Resource
                             ->avatar()
                             ->collection('cover_photos')
                             ->imagePreviewHeight('150')
-                            ->helperText('Upload a high-quality cover photo for the idol.'),
+                            ->helperText('Upload a high-quality cover photo for the idol.')
+                            ->customProperties(['type' => MediaTypes::CONCEPT->value]),
+
+                        SpatieMediaLibraryFileUpload::make('background_image')
+                            ->collection('background_images')
+                            ->imagePreviewHeight('150')
+                            ->helperText('Upload a high-quality background image for the idol.')
+                            ->customProperties(['type' => MediaTypes::CONCEPT->value]),
 
                         SpatieMediaLibraryFileUpload::make('gallery')
                             ->multiple()
                             ->collection('gallery')
                             ->imagePreviewHeight('150')
-                            ->helperText('Upload multiple images to showcase the idol’s gallery.'),
+                            ->helperText('Upload multiple images to showcase the idols gallery.')
+                            ->customProperties(['type' => MediaTypes::PHOTOSHOOT->value]),
                     ])
                     ->columns(1),
 

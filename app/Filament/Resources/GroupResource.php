@@ -2,15 +2,20 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GenreTypes;
+use App\Enums\GroupTypes;
 use App\Filament\Resources\GroupResource\Pages;
+use App\Models\Genre;
 use App\Models\Group;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -67,6 +72,31 @@ class GroupResource extends Resource
                             ->required()
                             ->placeholder('Generated automatically from the name'),
 
+                        Select::make('type')
+                            ->options(GroupTypes::class)
+                            ->required()
+                            ->placeholder('Select the group type')
+                            ->searchable()
+                            ->preload()
+                            ->native(false),
+
+                        TextInput::make('agency')
+                            ->label('Agency')
+                            ->placeholder('Enter the group’s agency'),
+
+                        TextInput::make('fandom_name')
+                            ->label('Fandom Name')
+                            ->placeholder('Enter the group’s fandom name'),
+
+
+                        Fieldset::make('Genre')
+                            ->schema([
+                                Select::make('type')
+                                    ->options(GenreTypes::class)
+                                    ->required()
+                                    ->placeholder('Select the group genre'),
+                            ]),
+
                         Hidden::make('is_slug_changed_manually')
                             ->default(false)
                             ->dehydrated(false),
@@ -109,6 +139,21 @@ class GroupResource extends Resource
                             ->collection('cover_photos')
                             ->imagePreviewHeight('150') // Adds image preview
                             ->helperText('Upload a high-quality cover photo for the group.'),
+
+                        SpatieMediaLibraryFileUpload::make('gallery')
+                            ->collection('gallery')
+                            ->imagePreviewHeight('150')
+                            ->helperText('Upload a gallery of photos for the group.')
+                            ->multiple(),
+
+                        FileUpload::make('background_video')
+                            ->label('Background Video')
+                            ->acceptedFileTypes(['video/mp4'])
+                            ->maxSize(50120)
+                            ->directory('group-videos')
+                            ->preserveFilenames()
+                            ->helperText('Upload a short background video loop (MP4 format, max 50MB)')
+                            ->columnSpanFull(),
                     ])
                     ->columns(1),
 
@@ -126,6 +171,7 @@ class GroupResource extends Resource
                     ->collapsible(),
             ]);
     }
+
     public static function table(Table $table): Table
     {
         return $table

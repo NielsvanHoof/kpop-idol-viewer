@@ -1,11 +1,14 @@
-import LoadingSpinner from '@/Components/LoadingSpinner';
 import AuthLayout from '@/Layouts/AuthLayout';
 import { Button, Field, Fieldset, Input, Label } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler } from 'react';
 
-export default function Register() {
+interface RegisterProps {
+    backGroundVideo: string;
+}
+
+export default function Register({ backGroundVideo }: RegisterProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -19,15 +22,6 @@ export default function Register() {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) return <LoadingSpinner />;
 
     return (
         <AuthLayout>
@@ -195,9 +189,12 @@ export default function Register() {
                 {/* Right Side - Image */}
                 <div className="relative hidden w-0 flex-1 lg:block">
                     <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-purple-900/50 to-purple-900/30" />
-                    <img
-                        src="/images/auth/register-bg.jpg"
-                        alt="K-pop Performance"
+                    <video
+                        src={backGroundVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
                         className="absolute inset-0 h-full w-full object-cover"
                     />
                 </div>

@@ -10,11 +10,12 @@ return new class extends Migration
     {
         Schema::create('awards', function (Blueprint $table) {
             $table->id();
-$table->string('name');
-$table->text('description');
-$table->date('from');
-$table->string('type');
-$table->timestamps();//
+            $table->string('name');
+            $table->text('description');
+            $table->date('from');
+            $table->enum('type', App\Enums\EventTypes::values())->nullable();
+            $table->morphs('awardable');
+            $table->timestamps();
         });
     }
 

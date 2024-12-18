@@ -1,18 +1,50 @@
 import { Idol } from '@/types/models';
-import { Button } from '@headlessui/react';
-import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { HeartIcon, UsersIcon } from 'lucide-react';
 import { useState } from 'react';
-import {
-    Autoplay,
-    EffectCoverflow,
-    Navigation,
-    Pagination,
-} from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5 },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.5 },
+    },
+    hover: {
+        y: -5,
+        scale: 1.02,
+        transition: { duration: 0.2 },
+    },
+};
 
 export default function PopularIdols({ spotlight }: { spotlight: Idol[] }) {
     const [likedIdols, setLikedIdols] = useState<number[]>([]);
+    const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
     const handleLike = (e: React.MouseEvent, idolId: number) => {
         e.preventDefault();
@@ -24,132 +56,186 @@ export default function PopularIdols({ spotlight }: { spotlight: Idol[] }) {
         );
     };
 
+    const handleImageLoad = (imageUrl: string) => {
+        setLoadedImages((prev) => new Set(prev).add(imageUrl));
+    };
+
     return (
-        <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-16 sm:py-32 dark:from-gray-900 dark:to-gray-800">
-            {/* Background Decoration */}
+        <section className="relative bg-gradient-to-b from-gray-50 to-white py-16 sm:py-32 dark:from-gray-900 dark:to-gray-800">
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="animate-pulse-slow h-[800px] w-[1200px] rounded-full bg-purple-100/50 blur-3xl filter dark:bg-purple-900/20" />
+                <div className="animate-pulse-slow h-[500px] w-[800px] rounded-full bg-purple-100/50 blur-3xl filter dark:bg-purple-900/20" />
             </div>
 
-            <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                {/* Section Header */}
+            <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={containerVariants}
+                className="relative"
+            >
+                {/* Header Section */}
                 <motion.div
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center"
+                    variants={itemVariants}
+                    className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8"
                 >
-                    <span className="mb-4 inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                        <SparklesIcon className="mr-1.5 h-4 w-4" />
-                        Featured Artists
-                    </span>
-                    <h2 className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl lg:text-5xl">
+                    <motion.div
+                        variants={itemVariants}
+                        className="mb-8 flex justify-center"
+                    >
+                        <span className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-4 py-2 text-purple-600 ring-1 ring-purple-100 dark:bg-purple-900/10 dark:text-purple-400 dark:ring-purple-900/30">
+                            <span className="h-2 w-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
+                            <span className="text-sm font-medium">
+                                Featured Artists
+                            </span>
+                        </span>
+                    </motion.div>
+
+                    <motion.h2
+                        variants={itemVariants}
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl lg:text-5xl"
+                    >
                         Popular Idols
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 sm:text-lg dark:text-gray-400">
+                    </motion.h2>
+                    <motion.p
+                        variants={itemVariants}
+                        className="mx-auto mt-4 max-w-2xl text-base text-gray-600 sm:text-lg dark:text-gray-400"
+                    >
                         Discover trending K-pop artists and their latest
                         achievements
-                    </p>
+                    </motion.p>
                 </motion.div>
 
-                {/* Swiper Carousel */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="mt-12 sm:mt-16"
-                >
+                {/* Carousel Section */}
+                <motion.div variants={itemVariants} className="mt-12 sm:mt-16">
                     <Swiper
-                        modules={[
-                            Autoplay,
-                            EffectCoverflow,
-                            Pagination,
-                            Navigation,
-                        ]}
-                        effect="coverflow"
-                        grabCursor={true}
+                        modules={[Autoplay, Navigation, Pagination]}
+                        slidesPerView={1.2}
                         centeredSlides={true}
-                        slidesPerView={2.5}
-                        initialSlide={1}
-                        coverflowEffect={{
-                            rotate: 0,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 2,
-                            slideShadows: false,
-                        }}
-                        autoplay={{
-                            delay: 3000,
-                            disableOnInteraction: false,
-                            pauseOnMouseEnter: true,
-                        }}
-                        pagination={{
-                            clickable: true,
-                            bulletActiveClass:
-                                'swiper-pagination-bullet-active !bg-purple-500 !w-3 !h-3',
-                            bulletClass:
-                                'swiper-pagination-bullet !bg-gray-300 !rounded-full !w-2 !h-2 !mx-1 transition-all duration-300',
-                        }}
+                        spaceBetween={30}
+                        navigation
+                        pagination={{ clickable: true }}
+                        autoplay={{ delay: 3000, pauseOnMouseEnter: true }}
                         breakpoints={{
-                            320: {
-                                slidesPerView: 1.2,
-                                spaceBetween: 20,
-                            },
-                            640: {
-                                slidesPerView: 1.5,
-                                spaceBetween: 30,
-                            },
-                            1024: {
-                                slidesPerView: 2.5,
-                                spaceBetween: 40,
-                            },
+                            640: { slidesPerView: 2.2, spaceBetween: 40 },
+                            1024: { slidesPerView: 3.2, spaceBetween: 50 },
                         }}
                         className="!pb-16"
                     >
-                        {spotlight.map((idol) => (
-                            <SwiperSlide key={idol.id}>
-                                <div className="group relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-200 transition-all duration-300 hover:scale-[1.03] dark:bg-gray-800 dark:ring-gray-700">
-                                    <div className="relative h-[28rem] overflow-hidden">
-                                        <img
-                                            src={idol.cover_photo}
-                                            alt={idol.name}
-                                            className="h-full w-full object-cover transition-transform duration-700 will-change-transform group-hover:scale-110"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <AnimatePresence>
+                            {spotlight.map((idol) => (
+                                <SwiperSlide key={idol.id}>
+                                    <motion.div
+                                        variants={cardVariants}
+                                        whileHover="hover"
+                                        className="group relative overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 transition-all dark:bg-gray-800 dark:ring-gray-700"
+                                    >
+                                        <div className="relative aspect-[4/5] overflow-hidden">
+                                            {/* Loading Skeleton */}
+                                            <AnimatePresence>
+                                                {!loadedImages.has(
+                                                    idol.cover_photo.url,
+                                                ) && (
+                                                    <motion.div
+                                                        initial={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }}
+                                                        className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-gray-700"
+                                                    />
+                                                )}
+                                            </AnimatePresence>
 
-                                        {/* Like Button */}
-                                        <Button
-                                            onClick={(e) =>
-                                                handleLike(e, idol.id)
-                                            }
-                                            className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-white dark:bg-gray-800/90 dark:hover:bg-gray-800"
-                                        >
-                                            <HeartIcon
-                                                className={`h-5 w-5 transition-colors ${
-                                                    likedIdols.includes(idol.id)
-                                                        ? 'text-red-500'
-                                                        : 'text-gray-400 hover:text-red-500'
-                                                }`}
+                                            {/* Image */}
+                                            <motion.img
+                                                src={idol.cover_photo.url}
+                                                alt={idol.name}
+                                                onLoad={() =>
+                                                    handleImageLoad(
+                                                        idol.cover_photo.url,
+                                                    )
+                                                }
+                                                initial={{
+                                                    opacity: 0,
+                                                    scale: 1.1,
+                                                }}
+                                                animate={{
+                                                    opacity: loadedImages.has(
+                                                        idol.cover_photo.url,
+                                                    )
+                                                        ? 1
+                                                        : 0,
+                                                    scale: 1,
+                                                }}
+                                                transition={{ duration: 0.3 }}
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
-                                        </Button>
-                                    </div>
 
-                                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                                        <div className="space-y-2">
-                                            <h3 className="text-2xl font-bold text-white">
-                                                {idol.name}
-                                            </h3>
-                                            <p className="text-lg text-purple-200">
-                                                {idol.group.name}
-                                            </p>
+                                            {/* Gradient Overlay */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100" />
+
+                                            {/* Like Button */}
+                                            <motion.button
+                                                onClick={(e) =>
+                                                    handleLike(e, idol.id)
+                                                }
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 shadow-lg backdrop-blur-sm transition-colors dark:bg-gray-800/90"
+                                            >
+                                                <HeartIcon
+                                                    className={`h-5 w-5 transition-colors ${
+                                                        likedIdols.includes(
+                                                            idol.id,
+                                                        )
+                                                            ? 'text-red-500'
+                                                            : 'text-gray-400 hover:text-red-500'
+                                                    }`}
+                                                />
+                                            </motion.button>
+
+                                            {/* Content */}
+                                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                                                <motion.div
+                                                    initial={{
+                                                        y: 20,
+                                                        opacity: 0,
+                                                    }}
+                                                    animate={{
+                                                        y: 0,
+                                                        opacity: 1,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.3,
+                                                    }}
+                                                    className="space-y-3"
+                                                >
+                                                    <h3 className="text-2xl font-bold text-white">
+                                                        {idol.name}
+                                                    </h3>
+                                                    <p className="text-lg text-purple-200">
+                                                        {idol.group.name ??
+                                                            'Solo'}
+                                                    </p>
+                                                    <div className="flex items-center gap-3 pt-2">
+                                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-sm text-white backdrop-blur-sm">
+                                                            <UsersIcon className="h-4 w-4" />
+                                                            {
+                                                                idol.followers_count
+                                                            }{' '}
+                                                            {idol.followers_count ===
+                                                            1
+                                                                ? 'Follower'
+                                                                : 'Followers'}
+                                                        </span>
+                                                    </div>
+                                                </motion.div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                        ))}
+                                    </motion.div>
+                                </SwiperSlide>
+                            ))}
+                        </AnimatePresence>
                     </Swiper>
                 </motion.div>
-            </div>
+            </motion.div>
         </section>
     );
 }

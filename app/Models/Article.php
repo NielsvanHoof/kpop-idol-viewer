@@ -2,20 +2,30 @@
 
 namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use App\Enums\ArticleTypes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
-    class Article extends Model {
-        protected $fillable = [
-        'title',
-        'description',
-        'date',
-        'category',
-        ];
+class Article extends Model
+{
+    use HasFactory, HasSlug;
 
-        protected function casts(): array
-        {
+    protected $guarded = [];
+
+    protected function casts(): array
+    {
         return [
-        'date' => 'date',
+            'date' => 'date',
+            'type' => ArticleTypes::class,
         ];
-        }
     }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+}

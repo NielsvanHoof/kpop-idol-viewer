@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ArticleResource;
 use App\Http\Resources\IdolResource;
-use App\Http\Resources\MerchandiseResource;
+use App\Models\Article;
 use App\Models\Idol;
-use App\Models\Merchandise;
 use Inertia\Inertia;
 
 class IndexController extends Controller
@@ -13,19 +13,20 @@ class IndexController extends Controller
     public function __invoke()
     {
         $spotlight = Idol::query()
-            ->with(['group', 'followers'])
+            ->with(['group'])
+            ->withCount(['followers', 'likes'])
             ->inRandomOrder()
             ->limit(4)
             ->get();
 
-        $merch = Merchandise::query()
+        $articles = Article::query()
             ->inRandomOrder()
             ->limit(4)
             ->get();
 
         return Inertia::render('Welcome', [
             'spotlight' => IdolResource::collection($spotlight),
-            'merch' => MerchandiseResource::collection($merch),
+            'articles' => ArticleResource::collection($articles),
         ]);
     }
 }

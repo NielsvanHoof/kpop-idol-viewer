@@ -1,9 +1,19 @@
-import ScrollToTop from '@/Components/ScrollToTop';
+import ScrollToTop from '@/Components/Common/ScrollToTop';
 import Footer from '@/Components/UI/Footer';
 import Navigation from '@/Components/UI/Navigation';
-import { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import LoadingSpinner from '@/Components/Common/LoadingSpinner';
 
 export default function MainLayout({ children }: PropsWithChildren) {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) return <LoadingSpinner />;
+
     return (
         <main>
             <ScrollToTop />

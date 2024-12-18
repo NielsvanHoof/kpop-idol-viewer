@@ -4,54 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $remember_token
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @method static UserFactory factory($count = null, $state = [])
- * @method static Builder<static>|User newModelQuery()
- * @method static Builder<static>|User newQuery()
- * @method static Builder<static>|User query()
- * @method static Builder<static>|User whereCreatedAt($value)
- * @method static Builder<static>|User whereEmail($value)
- * @method static Builder<static>|User whereEmailVerifiedAt($value)
- * @method static Builder<static>|User whereId($value)
- * @method static Builder<static>|User whereName($value)
- * @method static Builder<static>|User wherePassword($value)
- * @method static Builder<static>|User whereRememberToken($value)
- * @method static Builder<static>|User whereUpdatedAt($value)
- * @mixin Eloquent
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    /** @var array<string, string> */
+    protected $guarded = [];
 
-
+    /** @var array<string, string> */
     protected $hidden = [
         'password',
         'remember_token',
@@ -68,5 +36,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /** @return Attribute<string,never> */
+    protected function profilePhoto(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF'
+        );
+    }
+
+    /** @return HasManyThrough<Like> */
+    public function likes(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Idol::class,
+            Like::class,
+            'user_id',
+            'id',
+            'id',
+            'likeable_id'
+        );
+    }
+
+    /** @return HasManyThrough<Follower> */
+    public function follows(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Idol::class,
+            Follower::class,
+            'user_id',
+            'id',
+            'id',
+            'followable_id'
+        );
+    }
+
+    /** @return HasMany<RecentlyViewed> */
+    public function recentlyViewed(): HasMany
+    {
+        return $this->hasMany(RecentlyViewed::class, 'user_id');
     }
 }

@@ -3,4 +3,4 @@ export const GROUP_FILTERS = [
     'Girl Groups',
     'Boy Groups',
     'Mixed Groups',
-];
+] as const;

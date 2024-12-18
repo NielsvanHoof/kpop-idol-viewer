@@ -1,162 +1,245 @@
-import IdolOverViewFilters from '@/Components/Idols/overview/IdolOverViewFilters';
-import IdolOverViewGrid from '@/Components/Idols/overview/idolOverViewGrid';
-import LoadingSpinner from '@/Components/LoadingSpinner';
-import SEO from '@/Components/SEO';
-import SocialShare from '@/Components/SocialShare';
+import IdolCard from '@/Components/Idols/Overview/IdolCard';
+import IdolFilters from '@/Components/Idols/Overview/IdolFilters';
+import EmptyState from '@/Components/State/EmptyState';
+import { useIdolOverViewFilters } from '@/Hooks/useIdolOverViewFilters';
 import MainLayout from '@/Layouts/MainLayout';
 import { Idol, PaginatedResponse } from '@/types/models';
-import {
-    AdjustmentsHorizontalIcon,
-    ArrowPathIcon,
-    UserGroupIcon,
-} from '@heroicons/react/24/outline';
+import { Input } from '@headlessui/react';
+import { Head, router, usePage } from '@inertiajs/react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-};
+import { debounce } from 'lodash';
+import { Loader2Icon, UsersIcon } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function IdolOverview({
     idols,
 }: {
     idols: PaginatedResponse<Idol[]>;
 }) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { auth } = usePage().props;
+
+    const [isLiked, setIsLiked] = useState<Record<number, boolean>>(
+        idols.data.reduce((acc: Record<number, boolean>, idol) => {
+            acc[idol.id] = auth.user
+                ? idol.likes.some((like) => like.user_id === auth.user?.id)
+                : false;
+            return acc;
+        }, {}),
+    );
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
+        setIsLiked((prev) => ({
+            ...prev,
+            ...idols.data.reduce((acc: Record<number, boolean>, idol) => {
+                acc[idol.id] = auth.user
+                    ? idol.likes.some((like) => like.user_id === auth.user?.id)
+                    : false;
+                return acc;
+            }, {}),
+        }));
+    }, [idols.data, auth.user]);
 
-        return () => clearTimeout(timer);
-    }, []);
+    const {
+        filters,
+        setFilters,
+        handleSearch,
+        handleGenderFilter,
+        handleGroupFilter,
+        reloadWithParams,
+    } = useIdolOverViewFilters();
 
-    useEffect(() => {
-        if (!idols || !idols.data) {
-            setIsError(true);
-            setIsLoading(false);
+    const handleLoadMore = () => {
+        if (isLoading || !idols.meta.next_cursor) return;
+
+        setIsLoading(true);
+
+        router.reload({
+            only: ['idols'],
+            data: {
+                cursor: idols.meta.next_cursor,
+            },
+            onSuccess: () => {
+                setIsLoading(false);
+            },
+            onError: () => {
+                setIsLoading(false);
+            },
+        });
+    };
+
+    const handleFilterChange = (filter: string) => {
+        switch (filter) {
+            case 'male':
+            case 'female':
+                handleGenderFilter(filter);
+                break;
+            case 'groups':
+                handleGroupFilter(true);
+                break;
+            case 'solo':
+                handleGroupFilter(false);
+                break;
+            case 'all':
+                setFilters((prev) => ({
+                    ...prev,
+                    filter: {
+                        ...prev.filter,
+                        gender: '',
+                        has_group: undefined,
+                    },
+                    activeFilters: ['all'],
+                }));
+
+                reloadWithParams(new URLSearchParams(), 'visit');
+                break;
+            default:
+                handleGenderFilter('');
+                handleGroupFilter(undefined);
         }
-    }, [idols]);
+    };
 
-    if (isLoading) {
-        return (
-            <MainLayout>
-                <div className="flex min-h-screen items-center justify-center">
-                    <LoadingSpinner />
-                </div>
-            </MainLayout>
-        );
-    }
+    const handleLike = useCallback(
+        debounce((idol: Idol) => {
+            setIsLoading(true);
 
-    if (isError) {
-        return (
-            <MainLayout>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex min-h-screen flex-col items-center justify-center text-center"
-                >
-                    <ArrowPathIcon className="h-12 w-12 text-red-500" />
-                    <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Something went wrong
-                    </h3>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400">
-                        Please try refreshing the page
-                    </p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 rounded-full bg-purple-600 px-6 py-2 text-white hover:bg-purple-700"
-                    >
-                        Refresh Page
-                    </button>
-                </motion.div>
-            </MainLayout>
-        );
-    }
+            axios
+                .post(`like`, {
+                    type: 'idol',
+                    idol_id: idol.id,
+                })
+                .then(() => {
+                    setIsLiked((prev) => {
+                        const newLiked = { ...prev };
+                        newLiked[idol.id] = true;
+                        return newLiked;
+                    });
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }, 1000),
+        [],
+    );
 
-    if (idols.data.length === 0) {
-        return (
-            <MainLayout>
-                <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex min-h-screen flex-col items-center justify-center space-y-4 text-center"
-                >
-                    <UserGroupIcon className="h-12 w-12 text-gray-400" />
-                    <div className="space-y-2">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            No idols found
-                        </h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                            Try adjusting your search or filter criteria
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 inline-flex items-center space-x-2 rounded-full bg-purple-600 px-6 py-2 text-white hover:bg-purple-700"
-                    >
-                        <AdjustmentsHorizontalIcon className="h-5 w-5" />
-                        <span>Adjust Filters</span>
-                    </button>
-                </motion.div>
-            </MainLayout>
-        );
-    }
+    const handleUnlike = useCallback(
+        debounce((idol: Idol) => {
+            setIsLoading(true);
+
+            axios
+                .post(`unlike`, {
+                    type: 'idol',
+                    idol_id: idol.id,
+                })
+                .then(() => {
+                    setIsLiked((prev) => {
+                        const newLiked = { ...prev };
+                        delete newLiked[idol.id];
+                        return newLiked;
+                    });
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }, 1000),
+        [],
+    );
 
     return (
         <MainLayout>
-            <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={containerVariants}
-            >
-                <motion.div variants={itemVariants}>
-                    <SEO
-                        title="K-pop Idols & Artists | KPOP Project"
-                        description="Discover and learn about your favorite K-pop idols and artists."
-                    />
-                </motion.div>
+            <Head title="K-pop Idols | Discover Amazing Artists" />
 
-                <motion.div variants={itemVariants}>
-                    <SocialShare />
-                </motion.div>
-
+            <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
                 {/* Hero Section */}
-                <motion.div
-                    variants={itemVariants}
-                    className="relative overflow-hidden"
-                >
-                    {/* Background Decoration */}
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                        <div className="animate-pulse-slow h-[500px] w-[800px] rounded-full bg-purple-100/50 blur-3xl filter dark:bg-purple-900/20" />
+                <section className="relative bg-white/80 backdrop-blur-sm dark:bg-gray-900/80">
+                    <div className="absolute inset-0">
+                        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] opacity-30 [background-size:16px_16px] dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)]" />
                     </div>
 
-                    <div className="relative">
-                        <IdolOverViewFilters
-                            onSearch={() => {}}
-                            onFilter={() => {}}
-                            onSort={() => {}}
-                        />
+                    <div className="relative px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            className="mx-auto max-w-5xl text-center"
+                        >
+                            <motion.h1 className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
+                                K-pop Idols & Artists
+                            </motion.h1>
+
+                            <div className="mx-auto mt-8 max-w-xl">
+                                <Input
+                                    type="text"
+                                    placeholder="Search for an idol..."
+                                    value={filters.filter?.name}
+                                    onChange={handleSearch}
+                                    className="w-full rounded-full border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-lg ring-1 ring-gray-200 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:ring-gray-700 dark:placeholder:text-gray-500 dark:focus:border-purple-500 dark:focus:ring-purple-500"
+                                />
+                            </div>
+
+                            <IdolFilters
+                                activeFilters={filters.activeFilters}
+                                onFilterChange={handleFilterChange}
+                            />
+                        </motion.div>
                     </div>
-                </motion.div>
+                </section>
 
                 {/* Grid Section */}
-                <motion.div variants={itemVariants} className="relative z-10">
-                    <IdolOverViewGrid idols={idols.data} />
-                </motion.div>
-            </motion.div>
+                <section className="relative bg-gray-50 px-4 py-8 sm:py-16 lg:py-24 dark:bg-gray-900">
+                    <div className="relative mx-auto max-w-7xl">
+                        {idols.data.length > 0 ? (
+                            <>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                                    {idols.data.map((idol) => (
+                                        <IdolCard
+                                            isLoading={isLoading}
+                                            key={idol.id}
+                                            idol={idol}
+                                            isLiked={isLiked[idol.id]}
+                                            showLikeButton={true}
+                                            onLike={handleLike}
+                                            onUnlike={handleUnlike}
+                                        />
+                                    ))}
+                                </div>
+
+                                {idols.meta.next_cursor && (
+                                    <div className="mt-8 flex justify-center">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={handleLoadMore}
+                                            disabled={isLoading}
+                                            className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                        >
+                                            {isLoading && (
+                                                <Loader2Icon className="h-4 w-4 animate-spin" />
+                                            )}
+                                            {isLoading
+                                                ? 'Loading...'
+                                                : 'Load More'}
+                                        </motion.button>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <EmptyState
+                                title="No idols found"
+                                message="Try adjusting your filters or search terms to find what you're looking for."
+                                icon={
+                                    <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                }
+                                action={{
+                                    label: 'Clear Filters',
+                                    onClick: () => handleFilterChange('all'),
+                                }}
+                            />
+                        )}
+                    </div>
+                </section>
+            </main>
         </MainLayout>
     );
 }

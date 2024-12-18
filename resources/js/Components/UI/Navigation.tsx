@@ -1,10 +1,11 @@
+import { motion } from 'framer-motion';
 import {
     CalendarIcon,
+    NewspaperIcon,
     ShoppingBagIcon,
     SparklesIcon,
-    UserGroupIcon,
-} from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+    UsersIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AuthLinks from './Navigation/AuthLinks';
 import Logo from './Navigation/Logo';
@@ -16,7 +17,7 @@ const navigationLinks = [
     {
         name: 'Groups',
         href: route('groups.index'),
-        icon: <UserGroupIcon className="h-5 w-5" />,
+        icon: <UsersIcon className="h-5 w-5" />,
     },
     {
         name: 'Idols',
@@ -27,6 +28,11 @@ const navigationLinks = [
         name: 'Events',
         href: route('welcome'),
         icon: <CalendarIcon className="h-5 w-5" />,
+    },
+    {
+        name: 'News',
+        href: route('articles.index'),
+        icon: <NewspaperIcon className="h-5 w-5" />,
     },
     {
         name: 'Shop',

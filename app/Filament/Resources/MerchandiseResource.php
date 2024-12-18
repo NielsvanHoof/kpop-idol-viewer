@@ -8,7 +8,6 @@ use App\Models\Idol;
 use App\Models\Merchandise;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -95,11 +94,11 @@ class MerchandiseResource extends Resource
 
                         Placeholder::make('created_at')
                             ->label('Created Date')
-                            ->content(fn(?Merchandise $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Merchandise $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                         Placeholder::make('updated_at')
                             ->label('Last Modified Date')
-                            ->content(fn(?Merchandise $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Merchandise $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])
                     ->columns(2)
                     ->collapsible(),

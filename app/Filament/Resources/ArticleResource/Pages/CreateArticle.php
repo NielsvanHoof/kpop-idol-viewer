@@ -2,15 +2,17 @@
 
 namespace App\Filament\Resources\ArticleResource\Pages;
 
-    use App\Filament\Resources\ArticleResource;
-    use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\ArticleResource;
+use Filament\Resources\Pages\CreateRecord;
 
-    class CreateArticle extends CreateRecord {
-        protected static string $resource = ArticleResource::class;
+class CreateArticle extends CreateRecord
+{
+    protected static string $resource = ArticleResource::class;
 
-        protected function getHeaderActions(): array {
+    protected function getHeaderActions(): array
+    {
         return [
 
         ];
-        }
     }
+}

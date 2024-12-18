@@ -1,11 +1,20 @@
-import LoadingSpinner from '@/Components/LoadingSpinner';
 import AuthLayout from '@/Layouts/AuthLayout';
 import { Button, Field, Fieldset, Input, Label } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler } from 'react';
 
-export default function Login() {
+interface LoginProps {
+    canResetPassword: boolean;
+    status: string;
+    backGroundVideo: string;
+}
+
+export default function Login({
+    canResetPassword,
+    status,
+    backGroundVideo,
+}: LoginProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -15,15 +24,6 @@ export default function Login() {
         e.preventDefault();
         post(route('login'));
     };
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) return <LoadingSpinner />;
 
     return (
         <AuthLayout>
@@ -111,6 +111,15 @@ export default function Login() {
                                             </p>
                                         )}
                                     </Field>
+
+                                    {canResetPassword && (
+                                        <Link
+                                            href={route('password.request')}
+                                            className="mt-4 text-sm text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
+                                        >
+                                            Forgot your password?
+                                        </Link>
+                                    )}
                                 </Fieldset>
 
                                 <motion.div
@@ -139,10 +148,13 @@ export default function Login() {
                 {/* Right Side - Image */}
                 <div className="relative hidden w-0 flex-1 lg:block">
                     <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-purple-900/50 to-purple-900/30" />
-                    <img
-                        src="/images/auth/register-bg.jpg"
-                        alt="K-pop Performance"
+                    <video
+                        src={backGroundVideo}
                         className="absolute inset-0 h-full w-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
                     />
                 </div>
             </div>

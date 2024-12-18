@@ -9,15 +9,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('recently_vieweds', function (Blueprint $table) {
+        Schema::create('recently_viewed', function (Blueprint $table) {
             $table->id();
-$table->foreignIdFor(User::class)->constrained('users');
-$table->timestamps();//
+            $table->foreignIdFor(User::class)->constrained('users');
+            $table->morphs('viewable');
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('recently_vieweds');
+        Schema::dropIfExists('recently_viewed');
     }
 };

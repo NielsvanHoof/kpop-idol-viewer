@@ -8,13 +8,9 @@ import {
     PopoverPanel,
     Transition,
 } from '@headlessui/react';
-import {
-    Bars3Icon,
-    UserCircleIcon,
-    XMarkIcon,
-} from '@heroicons/react/24/outline';
 import { Link, usePage } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { CircleXIcon, MenuIcon, UserCircleIcon } from 'lucide-react';
 import { Fragment } from 'react';
 import { NavLink } from './NavLink';
 
@@ -50,6 +46,26 @@ const itemVariants = {
     open: { opacity: 1, x: 0 },
 };
 
+// Add new variants for menu items
+const dropdownVariants = {
+    closed: {
+        opacity: 0,
+        y: -10,
+        transition: {
+            staggerChildren: 0.05,
+            staggerDirection: -1,
+        },
+    },
+    open: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            staggerChildren: 0.07,
+            delayChildren: 0.1,
+        },
+    },
+};
+
 export default function MobileMenu({ navigationLinks }: MobileMenuProps) {
     const { auth } = usePage().props;
 
@@ -68,9 +84,9 @@ export default function MobileMenu({ navigationLinks }: MobileMenuProps) {
                                 transition={{ duration: 0.2 }}
                             >
                                 {open ? (
-                                    <XMarkIcon className="h-6 w-6" />
+                                    <CircleXIcon className="h-6 w-6" />
                                 ) : (
-                                    <Bars3Icon className="h-6 w-6" />
+                                    <MenuIcon className="h-6 w-6" />
                                 )}
                             </motion.span>
                         </PopoverButton>
@@ -125,8 +141,22 @@ export default function MobileMenu({ navigationLinks }: MobileMenuProps) {
                                                         leaveFrom="transform opacity-100 scale-100"
                                                         leaveTo="transform opacity-0 scale-95"
                                                     >
-                                                        <MenuItems className="mt-1 w-full rounded-xl bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-white/5">
-                                                            <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-700">
+                                                        <MenuItems
+                                                            as={motion.div}
+                                                            initial="closed"
+                                                            animate="open"
+                                                            exit="closed"
+                                                            variants={
+                                                                dropdownVariants
+                                                            }
+                                                            className="mt-1 w-full rounded-xl bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-white/5"
+                                                        >
+                                                            <motion.div
+                                                                variants={
+                                                                    itemVariants
+                                                                }
+                                                                className="border-b border-gray-200 px-4 py-2 dark:border-gray-700"
+                                                            >
                                                                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                                                     {
                                                                         auth
@@ -141,51 +171,64 @@ export default function MobileMenu({ navigationLinks }: MobileMenuProps) {
                                                                             .email
                                                                     }
                                                                 </p>
-                                                            </div>
-                                                            <MenuItem>
-                                                                {({
-                                                                    focus,
-                                                                }) => (
-                                                                    <Link
-                                                                        href={route(
-                                                                            'profile.edit',
-                                                                        )}
-                                                                        className={`block px-4 py-2 text-sm ${
-                                                                            focus
-                                                                                ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
-                                                                                : 'text-gray-700 dark:text-gray-300'
-                                                                        }`}
-                                                                        onClick={() =>
-                                                                            close()
-                                                                        }
-                                                                    >
-                                                                        Profile
-                                                                    </Link>
-                                                                )}
-                                                            </MenuItem>
-                                                            <MenuItem>
-                                                                {({
-                                                                    focus,
-                                                                }) => (
-                                                                    <Link
-                                                                        href={route(
-                                                                            'logout',
-                                                                        )}
-                                                                        method="post"
-                                                                        as="button"
-                                                                        className={`block w-full px-4 py-2 text-left text-sm ${
-                                                                            focus
-                                                                                ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
-                                                                                : 'text-gray-700 dark:text-gray-300'
-                                                                        }`}
-                                                                        onClick={() =>
-                                                                            close()
-                                                                        }
-                                                                    >
-                                                                        Sign Out
-                                                                    </Link>
-                                                                )}
-                                                            </MenuItem>
+                                                            </motion.div>
+                                                            <motion.div
+                                                                variants={
+                                                                    itemVariants
+                                                                }
+                                                            >
+                                                                <MenuItem>
+                                                                    {({
+                                                                        focus,
+                                                                    }) => (
+                                                                        <Link
+                                                                            href={route(
+                                                                                'dashboard',
+                                                                            )}
+                                                                            className={`block px-4 py-2 text-sm ${
+                                                                                focus
+                                                                                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
+                                                                                    : 'text-gray-700 dark:text-gray-300'
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                close()
+                                                                            }
+                                                                        >
+                                                                            Dashboard
+                                                                        </Link>
+                                                                    )}
+                                                                </MenuItem>
+                                                            </motion.div>
+                                                            <motion.div
+                                                                variants={
+                                                                    itemVariants
+                                                                }
+                                                            >
+                                                                <MenuItem>
+                                                                    {({
+                                                                        focus,
+                                                                    }) => (
+                                                                        <Link
+                                                                            href={route(
+                                                                                'logout',
+                                                                            )}
+                                                                            method="post"
+                                                                            as="button"
+                                                                            className={`block w-full px-4 py-2 text-left text-sm ${
+                                                                                focus
+                                                                                    ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
+                                                                                    : 'text-gray-700 dark:text-gray-300'
+                                                                            }`}
+                                                                            onClick={() =>
+                                                                                close()
+                                                                            }
+                                                                        >
+                                                                            Sign
+                                                                            Out
+                                                                        </Link>
+                                                                    )}
+                                                                </MenuItem>
+                                                            </motion.div>
                                                         </MenuItems>
                                                     </Transition>
                                                 </Menu>

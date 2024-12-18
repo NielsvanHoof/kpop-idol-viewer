@@ -1,37 +1,40 @@
-import LoadingSpinner from '@/Components/LoadingSpinner';
-import SEO from '@/Components/SEO';
-import SocialShare from '@/Components/SocialShare';
-import { useEffect, useState } from 'react';
-
-// Import Swiper styles
 import FeatureSection from '@/Components/Index/FeatureSection';
 import HeroSection from '@/Components/Index/HeroSection';
 import LatestNewsSection from '@/Components/Index/LatestNewsSection';
-import NewsLetterSection from '@/Components/Index/NewsLetterSection';
 import PopulairIdols from '@/Components/Index/PopulairIdols';
+import SEO from '@/Components/Common/SEO';
+import SocialShare from '@/Components/Common/SocialShare';
 import MainLayout from '@/Layouts/MainLayout';
-import { Idol, Merchandise } from '@/types/models';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { Article, Idol } from '@/types/models';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+        },
+    },
+};
+
+const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5 },
+    },
+};
 
 export default function Welcome({
     spotlight,
-    merch,
+    articles,
 }: {
     spotlight: Idol[];
-    merch: Merchandise[];
+    articles: Article[];
 }) {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) return <LoadingSpinner />;
-
     return (
         <MainLayout>
             <SEO
@@ -40,20 +43,36 @@ export default function Welcome({
             />
             <SocialShare />
 
-            {/* Hero Section */}
-            <HeroSection />
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+                className="relative"
+            >
+                <div className="pointer-events-none fixed inset-0 flex items-center justify-center">
+                    <div className="animate-pulse-slow h-[500px] w-[800px] rounded-full bg-purple-100/50 blur-3xl filter dark:bg-purple-900/20" />
+                </div>
 
-            {/* Popular Idols Section */}
-            <PopulairIdols spotlight={spotlight} />
+                {/* Hero Section */}
+                <motion.section variants={sectionVariants}>
+                    <HeroSection />
+                </motion.section>
 
-            {/* Features Section */}
-            <FeatureSection />
+                {/* Popular Idols Section */}
+                <motion.section variants={sectionVariants}>
+                    <PopulairIdols spotlight={spotlight} />
+                </motion.section>
 
-            {/* Latest News Section */}
-            <LatestNewsSection />
+                {/* Features Section */}
+                <motion.section variants={sectionVariants}>
+                    <FeatureSection />
+                </motion.section>
 
-            {/* Newsletter Section */}
-            <NewsLetterSection />
+                {/* Latest News Section */}
+                <motion.section variants={sectionVariants}>
+                    <LatestNewsSection articles={articles} />
+                </motion.section>
+            </motion.div>
         </MainLayout>
     );
 }

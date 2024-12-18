@@ -1,19 +1,18 @@
-import LoadingSpinner from '@/Components/LoadingSpinner';
-import SEO from '@/Components/SEO';
+import SEO from '@/Components/Common/SEO';
+import EmptyState from '@/Components/State/EmptyState';
 import { GROUP_FILTERS } from '@/Consts/GROUP_FILTERS';
 import MainLayout from '@/Layouts/MainLayout';
 import { Group, PaginatedResponse } from '@/types/models';
+import { Link } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     ArrowRightIcon,
     HeartIcon,
-    MusicalNoteIcon,
+    MusicIcon,
     StarIcon,
-    UserGroupIcon,
     UsersIcon,
-} from '@heroicons/react/24/outline';
-import { Link } from '@inertiajs/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+} from 'lucide-react';
+import { useState } from 'react';
 
 type Genre = (typeof GROUP_FILTERS)[number];
 
@@ -22,14 +21,8 @@ interface GroupOverviewProps {
 }
 
 export default function GroupOverview({ groups }: GroupOverviewProps) {
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedGenre, setSelectedGenre] = useState<Genre>('All');
     const [likedGroups, setLikedGroups] = useState<number[]>([]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000);
-        return () => clearTimeout(timer);
-    }, []);
 
     const handleLike = (e: React.MouseEvent, groupId: number) => {
         e.preventDefault();
@@ -40,16 +33,6 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                 : [...prev, groupId],
         );
     };
-
-    if (isLoading) {
-        return (
-            <MainLayout>
-                <div className="flex min-h-screen items-center justify-center">
-                    <LoadingSpinner />
-                </div>
-            </MainLayout>
-        );
-    }
 
     return (
         <MainLayout>
@@ -110,19 +93,13 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
             <section className="relative bg-gray-50 px-4 py-16 sm:px-6 sm:py-24 dark:bg-gray-900">
                 <div className="mx-auto max-w-7xl">
                     {groups.data.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex flex-col items-center justify-center py-12 text-center"
-                        >
-                            <UserGroupIcon className="h-12 w-12 text-gray-400" />
-                            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">
-                                No groups found
-                            </h3>
-                            <p className="mt-1 text-gray-500 dark:text-gray-400">
-                                Try selecting a different genre
-                            </p>
-                        </motion.div>
+                        <EmptyState
+                            icon={
+                                <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
+                            }
+                            title="No groups found"
+                            message="Try selecting a different genre"
+                        />
                     ) : (
                         <AnimatePresence mode="popLayout">
                             <motion.div
@@ -139,7 +116,7 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                                     >
                                         <div className="relative aspect-video overflow-hidden">
                                             <img
-                                                src={group.cover_photo}
+                                                src={group.cover_photo.url}
                                                 alt={group.name}
                                                 className="h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-110"
                                                 loading="lazy"
@@ -188,7 +165,7 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                                                     {group.idols_count} Members
                                                 </span>
                                                 <span className="flex items-center">
-                                                    <MusicalNoteIcon className="mr-1 h-4 w-4" />
+                                                    <MusicIcon className="mr-1 h-4 w-4" />
                                                     4 Albums
                                                 </span>
                                             </div>
