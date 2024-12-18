@@ -11,16 +11,14 @@ class Like extends Model
 {
     use HasFactory;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @return MorphTo<Model> */
     public function likeable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /** @return BelongsTo<User> */
+    /** @return BelongsTo<User, covariant self> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -20,10 +20,8 @@ class Idol extends Model implements HasMedia
 {
     use HasFactory, HasSlug, InteractsWithMedia, SoftDeletes;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
@@ -50,10 +48,10 @@ class Idol extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn () => [
+            get: fn() => [
                 'url' => $this->getFirstMediaUrl('cover_photos'),
-                'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type') ?? MediaTypes::CONCEPT->value,
-            ] ?? null,
+                'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type'),
+            ]
         );
     }
 
@@ -61,11 +59,11 @@ class Idol extends Model implements HasMedia
     protected function backgroundImage(): Attribute
     {
         return Attribute::make(
-            get: fn () => [
-                 
+            get: fn() => [
+
                 'url' => $this->getFirstMediaUrl('background_images'),
                 'type' => $this->getMedia('background_images')->first()?->getCustomProperty('type') ?? MediaTypes::CONCEPT->value,
-            ] ?? null,
+            ]
         );
     }
 
@@ -73,7 +71,7 @@ class Idol extends Model implements HasMedia
     protected function gallery(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getMedia('gallery')->map(fn (Media $media) => [
+            get: fn() => $this->getMedia('gallery')->map(fn(Media $media) => [
                 'url' => $media->getUrl(),
                 'type' => $media->getCustomProperty('type') ?? MediaTypes::PHOTOSHOOT->value,
             ])->toArray(),
@@ -87,49 +85,49 @@ class Idol extends Model implements HasMedia
             ->saveSlugsTo('slug');
     }
 
-    /** @return BelongsTo<Group> */
+    /** @return BelongsTo<Group, covariant self> */
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
 
-    /** @return MorphMany<Merchandise> */
+    /** @return MorphMany<Merchandise, covariant self> */
     public function merchandises(): MorphMany
     {
         return $this->morphMany(Merchandise::class, 'merchandiseable');
     }
 
-    /** @return MorphMany<Follower> */
+    /** @return MorphMany<Follower, covariant self> */
     public function followers(): MorphMany
     {
         return $this->morphMany(Follower::class, 'followable')->chaperone();
     }
 
-    /** @return MorphMany<Like> */
+    /** @return MorphMany<Like, covariant self> */
     public function likes(): MorphMany
     {
         return $this->morphMany(Like::class, 'likeable')->chaperone();
     }
 
-    /** @return MorphMany<Event> */
+    /** @return MorphMany<Event, covariant self> */
     public function events(): MorphMany
     {
         return $this->morphMany(Event::class, 'eventable')->chaperone();
     }
 
-    /** @return MorphMany<RecentlyViewed> */
+    /** @return MorphMany<RecentlyViewed, covariant self> */
     public function views(): MorphMany
     {
         return $this->morphMany(RecentlyViewed::class, 'viewable')->chaperone();
     }
 
-    /** @return MorphMany<Award> */
+    /** @return MorphMany<Award, covariant self> */
     public function awards(): MorphMany
     {
         return $this->morphMany(Award::class, 'awardable')->chaperone();
     }
 
-    /** @return MorphOne<Genre> */
+    /** @return MorphOne<Genre, covariant self> */
     public function genre(): MorphOne
     {
         return $this->morphOne(Genre::class, 'genreable');

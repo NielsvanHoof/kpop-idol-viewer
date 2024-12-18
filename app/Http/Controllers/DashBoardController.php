@@ -15,8 +15,7 @@ class DashBoardController extends Controller
 {
     public function __construct(
         private readonly UserActivityService $userActivityService
-    ) {
-    }
+    ) {}
 
     public function __invoke(): Response
     {

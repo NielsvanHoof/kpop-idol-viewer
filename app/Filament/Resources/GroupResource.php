@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\GenreTypes;
 use App\Enums\GroupTypes;
 use App\Filament\Resources\GroupResource\Pages;
-use App\Models\Genre;
 use App\Models\Group;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -56,7 +55,7 @@ class GroupResource extends Resource
                         TextInput::make('name')
                             ->label('Group Name')
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                                if (!$get('is_slug_changed_manually') && filled($state)) {
+                                if (! $get('is_slug_changed_manually') && filled($state)) {
                                     $set('slug', Str::slug($state));
                                 }
                             })
@@ -87,7 +86,6 @@ class GroupResource extends Resource
                         TextInput::make('fandom_name')
                             ->label('Fandom Name')
                             ->placeholder('Enter the group’s fandom name'),
-
 
                         Fieldset::make('Genre')
                             ->schema([
@@ -162,11 +160,11 @@ class GroupResource extends Resource
                     ->schema([
                         Placeholder::make('created_at')
                             ->label('Created Date')
-                            ->content(fn(?Group $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Group $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                         Placeholder::make('updated_at')
                             ->label('Last Modified Date')
-                            ->content(fn(?Group $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->content(fn (?Group $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])
                     ->collapsible(),
             ]);

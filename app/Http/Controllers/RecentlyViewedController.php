@@ -26,7 +26,7 @@ class RecentlyViewedController extends Controller
         // Calculate metadata
         $totalViews = $recentlyViewed->count();
         $uniqueItems = $recentlyViewed->unique('viewable_id')->count();
-        $lastViewed = $recentlyViewed->first()?->created_at ?? now();
+        $lastViewed = $recentlyViewed->first()['created_at'] ?? now();
 
         return Inertia::render('Profile/RecentlyViewed', [
             'recentlyViewed' => $recentlyViewed,

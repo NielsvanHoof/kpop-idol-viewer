@@ -12,16 +12,15 @@ class Follower extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @return MorphTo<Model> */
     public function followable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /** @return BelongsTo<User> */
+
+    /** @return BelongsTo<User, covariant self> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

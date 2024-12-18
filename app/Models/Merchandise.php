@@ -10,10 +10,8 @@ class Merchandise extends Model
 {
     use SoftDeletes;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @var array<string, string> */
     protected function casts(): array
     {
         return [
@@ -21,8 +19,7 @@ class Merchandise extends Model
             'release_date' => 'date',
         ];
     }
-
-    /** @return MorphTo<Model> */
+    
     public function merchandiseable(): MorphTo
     {
         return $this->morphTo();

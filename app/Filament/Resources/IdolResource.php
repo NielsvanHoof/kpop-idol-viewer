@@ -57,7 +57,7 @@ class IdolResource extends Resource
                         TextInput::make('name')
                             ->label('Idol Name')
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                                if (! $get('is_slug_changed_manually') && filled($state)) {
+                                if (!$get('is_slug_changed_manually') && filled($state)) {
                                     $set('slug', Str::slug($state));
                                 }
                             })
@@ -94,7 +94,7 @@ class IdolResource extends Resource
 
                         Select::make('group_id')
                             ->label('Group')
-                            ->options(Group::all()->pluck('name', 'id'))
+                            ->options(fn() => Group::query()->pluck('name', 'id'))
                             ->searchable()
                             ->preload(),
 
@@ -194,11 +194,11 @@ class IdolResource extends Resource
                     ->schema([
                         Placeholder::make('created_at')
                             ->label('Created Date')
-                            ->content(fn (?Idol $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->content(fn(?Idol $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                         Placeholder::make('updated_at')
                             ->label('Last Modified Date')
-                            ->content(fn (?Idol $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->content(fn(?Idol $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])
                     ->collapsible(),
             ]);

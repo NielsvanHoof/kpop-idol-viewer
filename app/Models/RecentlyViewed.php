@@ -17,7 +17,7 @@ class RecentlyViewed extends Model
         return $this->morphTo();
     }
 
-    /** @return BelongsTo<User> */
+    /** @return BelongsTo<User, covariant self> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

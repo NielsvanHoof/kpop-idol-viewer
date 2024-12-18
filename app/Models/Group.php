@@ -22,10 +22,8 @@ class Group extends Model implements HasMedia
 {
     use HasFactory, HasSlug, InteractsWithMedia, SoftDeletes;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
@@ -59,9 +57,9 @@ class Group extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn ($value, array $attributes) => [
-                'url' => $this->getFirstMediaUrl('cover_photos') ?? null,
-                'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type') ?? MediaTypes::CONCEPT->value,
+            get: fn($value, array $attributes) => [
+                'url' => $this->getFirstMediaUrl('cover_photos'),
+                'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type'),
             ],
         );
     }
@@ -70,7 +68,7 @@ class Group extends Model implements HasMedia
     protected function backgroundVideo(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Storage::disk('public')->url($value) ?? null,
+            get: fn($value) => Storage::disk('public')->url($value),
         );
     }
 
@@ -78,8 +76,8 @@ class Group extends Model implements HasMedia
     protected function gallery(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->getMedia('gallery')->map(
-                fn (Media $media) => [
+            get: fn($value) => $this->getMedia('gallery')->map(
+                fn(Media $media) => [
                     'url' => $media->getUrl(),
                     'date' => $media->created_at,
                     'type' => $media->getCustomProperty('type') ?? MediaTypes::PHOTOSHOOT->value,
@@ -88,49 +86,49 @@ class Group extends Model implements HasMedia
         );
     }
 
-    /** @return HasMany<Idol> */
+    /** @return HasMany<Idol, covariant self> */
     public function idols(): HasMany
     {
         return $this->hasMany(Idol::class, 'group_id');
     }
 
-    /** @return MorphMany<Merchandise> */
+    /** @return MorphMany<Merchandise, covariant self> */
     public function merchandises(): MorphMany
     {
         return $this->morphMany(Merchandise::class, 'merchandiseable');
     }
 
-    /** @return MorphMany<Follower> */
+    /** @return MorphMany<Follower, covariant self> */
     public function followers(): MorphMany
     {
         return $this->morphMany(Follower::class, 'followable')->chaperone();
     }
 
-    /** @return MorphMany<Like> */
+    /** @return MorphMany<Like, covariant self> */
     public function likes(): MorphMany
     {
         return $this->morphMany(Like::class, 'likeable')->chaperone();
     }
 
-    /** @return MorphMany<Event> */
+    /** @return MorphMany<Event, covariant self> */
     public function events(): MorphMany
     {
         return $this->morphMany(Event::class, 'eventable')->chaperone();
     }
 
-    /** @return MorphMany<RecentlyViewed> */
+    /** @return MorphMany<RecentlyViewed, covariant self> */
     public function views(): MorphMany
     {
         return $this->morphMany(RecentlyViewed::class, 'viewable')->chaperone();
     }
 
-    /** @return MorphMany<Award> */
+    /** @return MorphMany<Award, covariant self> */
     public function awards(): MorphMany
     {
         return $this->morphMany(Award::class, 'awardable')->chaperone();
     }
 
-    /** @return MorphOne<Genre> */
+    /** @return MorphOne<Genre, covariant self> */
     public function genre(): MorphOne
     {
         return $this->morphOne(Genre::class, 'genreable');

@@ -16,20 +16,14 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @var array<string, string> */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+
     protected function casts(): array
     {
         return [
@@ -42,11 +36,11 @@ class User extends Authenticatable
     protected function profilePhoto(): Attribute
     {
         return Attribute::make(
-            get: fn () => 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF'
+            get: fn() => 'https://ui-avatars.com/api/?rounded=true&name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF'
         );
     }
 
-    /** @return HasManyThrough<Like> */
+    /** @return HasManyThrough<Idol, Like, covariant self> */
     public function likes(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -59,7 +53,7 @@ class User extends Authenticatable
         );
     }
 
-    /** @return HasManyThrough<Follower> */
+    /** @return HasManyThrough<Idol, Follower, covariant self> */
     public function follows(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -72,7 +66,7 @@ class User extends Authenticatable
         );
     }
 
-    /** @return HasMany<RecentlyViewed> */
+    /** @return HasMany<RecentlyViewed, covariant self> */
     public function recentlyViewed(): HasMany
     {
         return $this->hasMany(RecentlyViewed::class, 'user_id');

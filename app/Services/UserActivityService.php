@@ -50,7 +50,7 @@ class UserActivityService
         ];
     }
 
-    /** @return Collection<int, array> */
+    /** @return Collection<int, RecentlyViewed> */
     public function getRecentlyViewedItems(User $user): Collection
     {
         return $user->recentlyViewed()
@@ -71,7 +71,7 @@ class UserActivityService
             ])
             ->latest()
             ->get()
-            ->transform(fn (RecentlyViewed $item) => $this->transformRecentlyViewedItem($item));
+            ->transform(fn(RecentlyViewed $item) => $this->transformRecentlyViewedItem($item));
     }
 
     /** @return array<string, mixed> */

@@ -14,10 +14,8 @@ class Event extends Model implements HasMedia
 {
     use InteractsWithMedia, SoftDeletes;
 
-    /** @var array<string, string> */
     protected $guarded = [];
 
-    /** @var array<string, string> */
     protected function casts(): array
     {
         return [
@@ -51,7 +49,6 @@ class Event extends Model implements HasMedia
         return $query->where('type', EventTypes::OTHER);
     }
 
-    /** @return MorphTo<Model> */
     public function eventable(): MorphTo
     {
         return $this->morphTo();
