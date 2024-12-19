@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Data\DashboardData;
 use App\Http\Resources\IdolResource;
+use App\Models\Idol;
+use App\Models\RecentlyViewed;
 use App\Models\User;
 use App\Services\UserActivityService;
 use Illuminate\Support\Collection;
-use App\Models\Idol;
-use App\Models\RecentlyViewed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -18,8 +18,7 @@ class DashBoardController extends Controller
 {
     public function __construct(
         private readonly UserActivityService $userActivityService
-    ) {
-    }
+    ) {}
 
     public function __invoke(): Response
     {
@@ -65,7 +64,7 @@ class DashBoardController extends Controller
      *   followed: Collection<int, Idol>,
      *   merged: Collection<int, Idol>
      * } $interactions
-     * @param Collection<int, RecentlyViewed> $recentlyViewed
+     * @param  Collection<int, RecentlyViewed>  $recentlyViewed
      */
     private function calculateActivityScore(User $user, array $interactions, Collection $recentlyViewed): int
     {
