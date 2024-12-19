@@ -19,7 +19,7 @@ class Merchandise extends Model
             'release_date' => 'date',
         ];
     }
-    
+
     public function merchandiseable(): MorphTo
     {
         return $this->morphTo();

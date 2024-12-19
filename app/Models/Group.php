@@ -57,7 +57,7 @@ class Group extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn($value, array $attributes) => [
+            get: fn ($value, array $attributes) => [
                 'url' => $this->getFirstMediaUrl('cover_photos'),
                 'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type'),
             ],
@@ -68,7 +68,7 @@ class Group extends Model implements HasMedia
     protected function backgroundVideo(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => Storage::disk('public')->url($value),
+            get: fn ($value) => Storage::disk('public')->url($value),
         );
     }
 
@@ -76,8 +76,8 @@ class Group extends Model implements HasMedia
     protected function gallery(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->getMedia('gallery')->map(
-                fn(Media $media) => [
+            get: fn ($value) => $this->getMedia('gallery')->map(
+                fn (Media $media) => [
                     'url' => $media->getUrl(),
                     'date' => $media->created_at,
                     'type' => $media->getCustomProperty('type') ?? MediaTypes::PHOTOSHOOT->value,

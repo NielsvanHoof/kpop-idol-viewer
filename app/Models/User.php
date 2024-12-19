@@ -23,7 +23,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-
     protected function casts(): array
     {
         return [
@@ -36,7 +35,7 @@ class User extends Authenticatable
     protected function profilePhoto(): Attribute
     {
         return Attribute::make(
-            get: fn() => 'https://ui-avatars.com/api/?rounded=true&name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF'
+            get: fn () => 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF'
         );
     }
 

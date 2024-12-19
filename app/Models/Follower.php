@@ -19,7 +19,6 @@ class Follower extends Model
         return $this->morphTo();
     }
 
-
     /** @return BelongsTo<User, covariant self> */
     public function user(): BelongsTo
     {

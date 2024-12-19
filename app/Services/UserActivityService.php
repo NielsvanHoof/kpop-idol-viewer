@@ -71,7 +71,7 @@ class UserActivityService
             ])
             ->latest()
             ->get()
-            ->transform(fn(RecentlyViewed $item) => $this->transformRecentlyViewedItem($item));
+            ->transform(fn (RecentlyViewed $item) => $this->transformRecentlyViewedItem($item));
     }
 
     /** @return array<string, mixed> */

@@ -48,7 +48,7 @@ class Idol extends Model implements HasMedia
     protected function coverPhoto(): Attribute
     {
         return Attribute::make(
-            get: fn() => [
+            get: fn () => [
                 'url' => $this->getFirstMediaUrl('cover_photos'),
                 'type' => $this->getMedia('cover_photos')->first()?->getCustomProperty('type'),
             ]
@@ -59,7 +59,7 @@ class Idol extends Model implements HasMedia
     protected function backgroundImage(): Attribute
     {
         return Attribute::make(
-            get: fn() => [
+            get: fn () => [
 
                 'url' => $this->getFirstMediaUrl('background_images'),
                 'type' => $this->getMedia('background_images')->first()?->getCustomProperty('type') ?? MediaTypes::CONCEPT->value,
@@ -71,7 +71,7 @@ class Idol extends Model implements HasMedia
     protected function gallery(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->getMedia('gallery')->map(fn(Media $media) => [
+            get: fn () => $this->getMedia('gallery')->map(fn (Media $media) => [
                 'url' => $media->getUrl(),
                 'type' => $media->getCustomProperty('type') ?? MediaTypes::PHOTOSHOOT->value,
             ])->toArray(),
