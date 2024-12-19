@@ -6,9 +6,9 @@ use App\Models\Group;
 use App\Models\Idol;
 use App\Models\RecentlyViewed;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 
 class UserActivityService
 {
@@ -95,5 +95,10 @@ class UserActivityService
             'totalFollowing' => $totalFollowing,
             'joinDate' => $user->created_at->format('Y-m-d'),
         ];
+    }
+
+    public function getTimeLineEvents(User $user): Collection
+    {
+        return collect([]);
     }
 }

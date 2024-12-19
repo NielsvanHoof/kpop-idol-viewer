@@ -11,7 +11,8 @@ class DashboardData extends Data
         public Collection $liked,
         public Collection $followed,
         public Collection $recentlyViewed,
-        public array $stats
+        public array $stats,
+        public Collection $timelineEvents
     ) {}
 
     public function getMergedLikesAndFollows(): Collection
