@@ -1,44 +1,16 @@
+import { Article } from '@/types/models';
 import { motion } from 'framer-motion';
 import { CalendarIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import TimelineEvent from './TimelineEvent';
 import TimelineFilters from './TimelineFilters';
-
 interface TimelineProps {
-    events: TimelineEvent[];
-}
-
-export interface TimelineEvent {
-    date: Date;
-    type: 'debut' | 'comeback' | 'award' | 'event';
-    title: string;
-    description: string;
-    media?: string;
-    artist: {
-        id: number;
-        name: string;
-        type: 'idol' | 'group';
-        profile_photo?: string;
-    };
+    events: Article[];
 }
 
 export default function TimelineFeature({ events }: TimelineProps) {
     const [selectedType, setSelectedType] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
-
-    const filteredEvents = events
-        .filter((event) => {
-            if (selectedType === 'all') return true;
-            return event.type === selectedType;
-        })
-        .filter(
-            (event) =>
-                event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                event.artist.name
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()),
-        )
-        .sort((a, b) => b.date.getTime() - a.date.getTime());
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 dark:bg-gray-900">
@@ -84,7 +56,7 @@ export default function TimelineFeature({ events }: TimelineProps) {
                 <div className="relative mt-12">
                     <div className="absolute left-1/2 h-full w-px -translate-x-1/2 bg-gray-200 dark:bg-gray-700" />
                     <div className="space-y-12">
-                        {filteredEvents.map((event, index) => (
+                        {events.map((event, index) => (
                             <TimelineEvent
                                 key={index}
                                 event={event}

@@ -145,7 +145,6 @@ export default function GroupProfile({
                                     />
                                     <GroupProfileMembersPanel group={group} />
                                     <GroupProfileDiscoveryPanel
-                                        group={group}
                                         songs={songs}
                                         artistInformation={artistInformation}
                                     />

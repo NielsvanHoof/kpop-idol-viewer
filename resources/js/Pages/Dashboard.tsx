@@ -2,8 +2,7 @@ import DashBoardActivityTimeline from '@/Components/DashBoard/DashBoardActivityT
 import DashBoardFavoriteIdols from '@/Components/DashBoard/DashBoardFavoriteIdols';
 import DashboardMetrics from '@/Components/DashBoard/DashboardMetrics';
 import DashboardProfileHeader from '@/Components/DashBoard/DashBoardProfile';
-import DashboardRecentlyViewed from '@/Components/DashBoard/DashboardRecentlyViewed';
-import { mockUpcomingEvents } from '@/Data/mockDashboardData';
+import DashboardRecentlyViewed from '@/Components/DashBoard/DashBoardRecentlyViewed';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import MainLayout from '@/Layouts/MainLayout';
 import { Article, Idol, RecentlyViewedItem } from '@/types/models';
@@ -61,7 +60,6 @@ export default function Dashboard({
                             >
                                 <DashBoardActivityTimeline
                                     articles={timelineEvents}
-                                    events={mockUpcomingEvents}
                                 />
                             </motion.div>
 

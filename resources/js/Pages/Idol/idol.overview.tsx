@@ -185,7 +185,9 @@ export default function IdolOverview({
                                     type="text"
                                     placeholder="Search for an idol..."
                                     value={filters.filter?.name}
-                                    onChange={handleSearch}
+                                    onChange={(e) =>
+                                        handleSearch(e.target.value)
+                                    }
                                     className="w-full rounded-full border-gray-200 bg-white px-4 py-3 text-gray-900 shadow-lg ring-1 ring-gray-200 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:ring-gray-700 dark:placeholder:text-gray-500 dark:focus:border-purple-500 dark:focus:ring-purple-500"
                                 />
                             </div>

@@ -175,12 +175,7 @@ export default function IdolProfile({
                                             }
                                         />
                                         <IdolProfileBioPanel idol={idol} />
-                                        <IdolProfileGalleryPanel
-                                            idol={idol}
-                                            artistInformation={
-                                                artistInformation
-                                            }
-                                        />
+                                        <IdolProfileGalleryPanel idol={idol} />
                                         <IdolProfileEventsPanel idol={idol} />
                                         <IdolProfileMusicPanel songs={songs} />
                                     </motion.div>
