@@ -26,14 +26,15 @@ export default function IdolCard({
 
     return (
         <motion.div
+            animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -5 }}
-            className="group relative overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 transition-all hover:shadow-xl hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
+            className="group relative overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:shadow-xl hover:ring-purple-200 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:ring-purple-700"
         >
             {/* Image Section */}
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[3/4] overflow-hidden bg-purple-50 dark:bg-purple-900/10">
                 {/* Loading Skeleton */}
                 {!imageLoaded && (
-                    <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-gray-700" />
+                    <div className="absolute inset-0 animate-pulse bg-purple-100/50 dark:bg-purple-900/30" />
                 )}
 
                 {/* Image */}
@@ -46,9 +47,12 @@ export default function IdolCard({
                         opacity: imageLoaded ? 1 : 0,
                         scale: 1,
                     }}
-                    transition={{ duration: 0.3 }}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
                 {/* Like Button */}
                 {showLikeButton && auth.user && (
@@ -74,7 +78,7 @@ export default function IdolCard({
                 )}
             </div>
 
-            {/* Info Section - Always Visible */}
+            {/* Info Section */}
             <div className="p-4">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                     {idol.name}
@@ -85,20 +89,20 @@ export default function IdolCard({
 
                 {/* Stats Section */}
                 <div className="mt-4 flex items-center gap-4">
-                    <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                        <UsersIcon className="h-5 w-5 text-purple-500" />
+                    <span className="flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1 text-sm text-purple-600 ring-1 ring-purple-100 dark:bg-purple-900/10 dark:text-purple-400 dark:ring-purple-900/30">
+                        <UsersIcon className="h-4 w-4" />
                         {idol.followers_count}
                     </span>
-                    <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                        <StarIcon className="h-5 w-5 text-yellow-500" />
+                    <span className="flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1 text-sm text-purple-600 ring-1 ring-purple-100 dark:bg-purple-900/10 dark:text-purple-400 dark:ring-purple-900/30">
+                        <StarIcon className="h-4 w-4" />
                         {idol.likes_count}
                     </span>
                 </div>
 
-                {/* Mobile-friendly View Profile Button */}
+                {/* View Profile Button */}
                 <Link
                     href={route('idols.show', idol.slug)}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-purple-50 py-2 text-sm font-medium text-purple-600 ring-1 ring-purple-100 transition-all hover:bg-purple-100 active:scale-95 dark:bg-purple-900/10 dark:text-purple-400 dark:ring-purple-900/30 dark:hover:bg-purple-900/20"
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-purple-600 py-2 text-sm font-medium text-white shadow-lg transition-all hover:bg-purple-700 hover:shadow-xl active:scale-95 dark:bg-purple-600 dark:hover:bg-purple-700"
                 >
                     View Profile
                     <ArrowRightIcon className="h-4 w-4" />

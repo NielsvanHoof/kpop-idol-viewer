@@ -16,7 +16,7 @@ export default function GroupProfileHeroSection({ group }: { group: Group }) {
                 </video>
             </div>
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent">
+            <div className="absolute inset-0 bg-black/60">
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                     <div className="mx-auto max-w-7xl">
                         <motion.div

@@ -1,8 +1,7 @@
-import ScrollToTop from '@/Components/Common/ScrollToTop';
+import LoadingSpinner from '@/Components/Common/LoadingSpinner';
 import Footer from '@/Components/UI/Footer';
 import Navigation from '@/Components/UI/Navigation';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import LoadingSpinner from '@/Components/Common/LoadingSpinner';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +15,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
     return (
         <main>
-            <ScrollToTop />
             <div className="min-h-screen bg-gray-50 text-gray-800 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-200">
                 <Navigation />
                 {children}

@@ -1,8 +1,9 @@
+import { Article } from '@/types/models';
 import { motion } from 'framer-motion';
-import { TimelineEvent as TimelineEventType } from './TimelineFeature';
+import { remark } from 'remark';
 
 interface TimelineEventProps {
-    event: TimelineEventType;
+    event: Article;
     index: number;
 }
 
@@ -23,30 +24,35 @@ export default function TimelineEvent({ event, index }: TimelineEventProps) {
                     className="rounded-lg bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
                 >
                     <div className="flex items-center gap-2">
-                        {event.artist.profile_photo && (
-                            <img
-                                src={event.artist.profile_photo}
-                                alt={event.artist.name}
-                                className="h-8 w-8 rounded-full object-cover"
-                            />
-                        )}
-                        <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                            {event.artist.name}
-                        </span>
+                        {/*{event.artist.profile_photo && (*/}
+                        {/*    <img*/}
+                        {/*        src={event.artist.profile_photo}*/}
+                        {/*        alt={event.artist.name}*/}
+                        {/*        className="h-8 w-8 rounded-full object-cover"*/}
+                        {/*    />*/}
+                        {/*)}*/}
+                        {/*<span className="text-sm font-medium text-purple-600 dark:text-purple-400">*/}
+                        {/*    {event.artist.name}*/}
+                        {/*</span>*/}
                     </div>
                     <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-white">
                         {event.title}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {event.description}
-                    </p>
-                    {event.media && (
-                        <img
-                            src={event.media}
-                            alt={event.title}
-                            className="mt-4 h-32 w-full rounded-lg object-cover"
-                        />
-                    )}
+                    <p
+                        className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+                        dangerouslySetInnerHTML={{
+                            __html: remark()
+                                .processSync(event.description)
+                                .toString(),
+                        }}
+                    />
+                    {/*{event.media && (*/}
+                    {/*    <img*/}
+                    {/*        src={event.media}*/}
+                    {/*        alt={event.title}*/}
+                    {/*        className="mt-4 h-32 w-full rounded-lg object-cover"*/}
+                    {/*    />*/}
+                    {/*)}*/}
                 </motion.div>
             </div>
 
@@ -58,11 +64,7 @@ export default function TimelineEvent({ event, index }: TimelineEventProps) {
                         isEven ? '-right-28' : '-left-28'
                     } whitespace-nowrap text-sm font-medium text-gray-500 dark:text-gray-400`}
                 >
-                    {event.date.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                    })}
+                    {new Date(event.date).toLocaleDateString()}
                 </div>
             </div>
         </motion.div>

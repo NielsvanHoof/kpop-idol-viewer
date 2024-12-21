@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react';
 import debounce from 'lodash/debounce';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Filters {
     filter: {
@@ -23,45 +23,45 @@ export function useIdolOverViewFilters() {
         activeFilters: ['all'],
     });
 
-    const reloadWithParams = (
-        searchParams: URLSearchParams,
-        visitOrReload: 'visit' | 'reload' = 'reload',
-    ) => {
-        if (visitOrReload === 'visit') {
-            router.visit(window.location.pathname, {
-                only: ['idols'],
-                data: Object.fromEntries(searchParams.entries()),
-            });
-        } else {
-            router.reload({
-                only: ['idols'],
-                data: Object.fromEntries(searchParams.entries()),
-            });
-        }
-    };
+    const reloadWithParams = useCallback(
+        (
+            searchParams: URLSearchParams,
+            visitOrReload: 'visit' | 'reload' = 'reload',
+        ) => {
+            if (visitOrReload === 'visit') {
+                router.visit(window.location.pathname, {
+                    only: ['idols'],
+                    data: Object.fromEntries(searchParams.entries()),
+                });
+            } else {
+                router.reload({
+                    only: ['idols'],
+                    data: Object.fromEntries(searchParams.entries()),
+                });
+            }
+        },
+        [],
+    );
 
-    const debouncedSearch = useCallback(
-        debounce((searchValue: string) => {
+    const debouncedSearch = useCallback(() => {
+        return debounce((searchValue: string) => {
             const searchParams = new URLSearchParams();
             if (searchValue) {
                 searchParams.set('filter[name]', searchValue);
             }
             reloadWithParams(searchParams, 'reload');
-        }, 300),
-        [],
-    );
+        }, 300);
+    }, [reloadWithParams]);
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setFilters((prev) => ({
-            ...prev,
-            filter: {
-                ...prev.filter,
-                name: value,
-            },
-            activeFilters: ['all'],
-        }));
-        debouncedSearch(value);
+    useEffect(() => {
+        const searchFn = debouncedSearch();
+        return () => {
+            searchFn.cancel();
+        };
+    }, [debouncedSearch]);
+
+    const handleSearch = (value: string) => {
+        debouncedSearch()(value);
     };
 
     const handleSort = (value: string) => {

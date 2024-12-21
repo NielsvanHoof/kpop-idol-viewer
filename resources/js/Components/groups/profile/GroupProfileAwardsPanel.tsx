@@ -44,33 +44,45 @@ export default function GroupProfileAwardsPanel({ group }: { group: Group }) {
             name: 'Daesang',
             count: group.awards.filter((a) => a.type === 'daesang').length,
             icon: TrophyIcon,
-            color: 'text-yellow-600 dark:text-yellow-400',
-            bg: 'bg-yellow-50 dark:bg-yellow-900/10',
-            ring: 'ring-yellow-100 dark:ring-yellow-900/30',
+            color: 'text-yellow-600',
+            bg: 'bg-yellow-50',
+            ring: 'ring-yellow-100',
+            darkColor: 'dark:text-yellow-400',
+            darkBg: 'dark:bg-yellow-900/10',
+            darkRing: 'dark:ring-yellow-900/30',
         },
         {
             name: 'Bonsang',
             count: group.awards.filter((a) => a.type === 'bonsang').length,
             icon: MedalIcon,
-            color: 'text-purple-600 dark:text-purple-400',
-            bg: 'bg-purple-50 dark:bg-purple-900/10',
-            ring: 'ring-purple-100 dark:ring-purple-900/30',
+            color: 'text-purple-600',
+            bg: 'bg-purple-50',
+            ring: 'ring-purple-100',
+            darkColor: 'dark:text-purple-400',
+            darkBg: 'dark:bg-purple-900/10',
+            darkRing: 'dark:ring-purple-900/30',
         },
         {
             name: 'Rookie',
             count: group.awards.filter((a) => a.type === 'rookie').length,
             icon: SparklesIcon,
-            color: 'text-blue-600 dark:text-blue-400',
-            bg: 'bg-blue-50 dark:bg-blue-900/10',
-            ring: 'ring-blue-100 dark:ring-blue-900/30',
+            color: 'text-blue-600',
+            bg: 'bg-blue-50',
+            ring: 'ring-blue-100',
+            darkColor: 'dark:text-blue-400',
+            darkBg: 'dark:bg-blue-900/10',
+            darkRing: 'dark:ring-blue-900/30',
         },
         {
             name: 'Popularity',
             count: group.awards.filter((a) => a.type === 'popularity').length,
             icon: StarIcon,
-            color: 'text-pink-600 dark:text-pink-400',
-            bg: 'bg-pink-50 dark:bg-pink-900/10',
-            ring: 'ring-pink-100 dark:ring-pink-900/30',
+            color: 'text-pink-600',
+            bg: 'bg-pink-50',
+            ring: 'ring-pink-100',
+            darkColor: 'dark:text-pink-400',
+            darkBg: 'dark:bg-pink-900/10',
+            darkRing: 'dark:ring-pink-900/30',
         },
     ];
 
@@ -107,7 +119,7 @@ export default function GroupProfileAwardsPanel({ group }: { group: Group }) {
                                 <motion.div
                                     key={award.id}
                                     variants={itemVariants}
-                                    className={`group relative flex gap-4 rounded-lg ${
+                                    className={`group relative flex gap-4 rounded-lg p-4 ring-1 ${
                                         award.type === 'daesang'
                                             ? 'bg-yellow-50 ring-yellow-100 dark:bg-yellow-900/10 dark:ring-yellow-900/30'
                                             : award.type === 'bonsang'
@@ -115,7 +127,7 @@ export default function GroupProfileAwardsPanel({ group }: { group: Group }) {
                                               : award.type === 'rookie'
                                                 ? 'bg-blue-50 ring-blue-100 dark:bg-blue-900/10 dark:ring-blue-900/30'
                                                 : 'bg-pink-50 ring-pink-100 dark:bg-pink-900/10 dark:ring-pink-900/30'
-                                    } p-4 ring-1 transition-all hover:-translate-y-1 hover:shadow-md`}
+                                    } transition-all hover:-translate-y-1 hover:shadow-md`}
                                 >
                                     <div className="flex flex-col items-center rounded-lg bg-white px-3 py-1.5 text-center shadow-sm dark:bg-gray-800">
                                         <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
@@ -192,18 +204,18 @@ export default function GroupProfileAwardsPanel({ group }: { group: Group }) {
                             {awardTypes.map((type) => (
                                 <div
                                     key={type.name}
-                                    className={`rounded-lg ${type.bg} p-3 text-center ring-1 ${type.ring}`}
+                                    className={`rounded-lg ${type.bg} ${type.darkBg} p-3 text-center ring-1 ${type.ring} ${type.darkRing}`}
                                 >
                                     <type.icon
-                                        className={`mx-auto h-5 w-5 ${type.color}`}
+                                        className={`mx-auto h-5 w-5 ${type.color} ${type.darkColor}`}
                                     />
                                     <p
-                                        className={`mt-1 text-sm font-medium ${type.color}`}
+                                        className={`mt-1 text-sm font-medium ${type.color} ${type.darkColor}`}
                                     >
                                         {type.name}
                                     </p>
                                     <p
-                                        className={`text-lg font-bold ${type.color}`}
+                                        className={`text-lg font-bold ${type.color} ${type.darkColor}`}
                                     >
                                         {type.count}
                                     </p>

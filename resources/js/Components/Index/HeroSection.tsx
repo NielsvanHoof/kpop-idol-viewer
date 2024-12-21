@@ -37,7 +37,7 @@ const backgroundVariants = {
 
 export default function HeroSection() {
     return (
-        <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-purple-600 via-pink-500 to-orange-500">
+        <section className="relative min-h-screen overflow-hidden bg-purple-600 dark:bg-gray-900">
             {/* Content Container */}
             <motion.div
                 initial="hidden"
@@ -49,9 +49,9 @@ export default function HeroSection() {
                     variants={itemVariants}
                     className="mb-8 flex justify-center"
                 >
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
-                        <span className="h-2 w-2 rounded-full bg-gradient-to-r from-purple-300 to-pink-300" />
-                        <span className="text-sm font-medium text-white">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/30 px-4 py-2 backdrop-blur-sm">
+                        <span className="h-2 w-2 rounded-full bg-white" />
+                        <span className="text-sm font-semibold text-white">
                             Welcome to KPOP Project
                         </span>
                     </span>
@@ -61,7 +61,7 @@ export default function HeroSection() {
                 <motion.div variants={itemVariants} className="text-center">
                     <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
                         <span className="mb-2 flex items-center justify-center gap-3 sm:mb-4">
-                            <SparklesIcon className="h-8 w-8 animate-pulse text-yellow-300 sm:h-10 sm:w-10" />
+                            <SparklesIcon className="h-8 w-8 animate-pulse text-yellow-100 sm:h-10 sm:w-10" />
                             <Typewriter
                                 words={['Experience', 'Discover', 'Celebrate']}
                                 loop={true}
@@ -71,11 +71,11 @@ export default function HeroSection() {
                                 deleteSpeed={50}
                                 delaySpeed={1000}
                             />
-                            <SparklesIcon className="h-8 w-8 animate-pulse text-yellow-300 sm:h-10 sm:w-10" />
+                            <SparklesIcon className="h-8 w-8 animate-pulse text-yellow-100 sm:h-10 sm:w-10" />
                         </span>
                         <motion.span
                             variants={itemVariants}
-                            className="mt-2 block bg-gradient-to-r from-white via-white to-purple-200 bg-clip-text font-extrabold text-transparent sm:mt-4"
+                            className="mt-2 block font-extrabold text-white sm:mt-4"
                         >
                             The K-pop Universe
                         </motion.span>
@@ -84,7 +84,7 @@ export default function HeroSection() {
                     {/* Description */}
                     <motion.p
                         variants={itemVariants}
-                        className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-purple-50 sm:mt-8 sm:text-xl"
+                        className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/90 sm:mt-8 sm:text-xl"
                     >
                         Your ultimate destination for everything K-pop: from
                         chart-topping hits to behind-the-scenes exclusives. Join
@@ -101,7 +101,7 @@ export default function HeroSection() {
                             as={motion.button}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="group relative overflow-hidden rounded-full bg-white px-6 py-3 text-purple-600 shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-purple-600 sm:px-8 sm:py-4"
+                            className="group relative overflow-hidden rounded-full bg-white px-6 py-3 text-purple-500 shadow-lg transition-all duration-300 hover:text-purple-600 hover:shadow-xl hover:shadow-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-purple-500 sm:px-8 sm:py-4"
                         >
                             <span className="relative z-10 flex items-center justify-center font-medium">
                                 Get Started
@@ -113,14 +113,13 @@ export default function HeroSection() {
                             as={motion.button}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="group rounded-full border-2 border-white/80 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all duration-300 hover:border-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-purple-600 sm:px-8 sm:py-4"
+                            className="group rounded-full border-2 border-white/90 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-purple-500 sm:px-8 sm:py-4"
                         >
                             Learn More
                         </Button>
                     </motion.div>
                 </motion.div>
             </motion.div>
-
             {/* Animated Background */}
             <motion.div
                 initial="hidden"
@@ -129,7 +128,7 @@ export default function HeroSection() {
                 className="absolute inset-0 overflow-hidden"
             >
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-purple-900/40" />
+                <div className="absolute inset-0 bg-black/20" />
 
                 <div className="pointer-events-none absolute inset-0">
                     <motion.div
@@ -144,9 +143,9 @@ export default function HeroSection() {
                         }}
                         className="absolute inset-0"
                     >
-                        <div className="absolute -left-20 top-20 h-64 w-64 rounded-full bg-purple-400/30 blur-3xl" />
-                        <div className="absolute right-40 top-60 h-48 w-48 rounded-full bg-pink-400/30 blur-3xl" />
-                        <div className="absolute bottom-40 left-1/2 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
+                        <div className="absolute -left-20 top-20 h-64 w-64 rounded-full bg-purple-300/40 blur-3xl" />
+                        <div className="absolute right-40 top-60 h-48 w-48 rounded-full bg-pink-300/40 blur-3xl" />
+                        <div className="absolute bottom-40 left-1/2 h-72 w-72 rounded-full bg-purple-400/40 blur-3xl" />
                     </motion.div>
                 </div>
             </motion.div>

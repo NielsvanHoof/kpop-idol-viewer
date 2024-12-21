@@ -42,19 +42,28 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
             />
 
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-24 text-white sm:px-6">
+            <section className="relative overflow-hidden bg-purple-600 px-4 py-24 text-white sm:px-6">
                 {/* Background Decoration */}
                 <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30" />
+                    <div className="absolute inset-0 bg-black/20" />
                     <div className="animate-pulse-slow absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl" />
+                    <div className="absolute right-0 top-0 -translate-y-12 translate-x-12 blur-3xl">
+                        <div className="animate-pulse-slow h-72 w-72 rounded-full bg-purple-500/20" />
+                    </div>
                 </div>
 
                 <div className="relative mx-auto max-w-7xl">
                     <motion.div
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center"
                     >
-                        <h1 className="text-4xl font-bold sm:text-5xl">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm">
+                            <span className="h-2 w-2 rounded-full bg-purple-400" />
+                            Browse Groups
+                        </span>
+
+                        <h1 className="mt-6 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
                             Discover K-pop Groups
                         </h1>
                         <p className="mt-4 text-lg text-purple-100">
@@ -65,6 +74,7 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
 
                     {/* Genre Filter */}
                     <motion.div
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                         className="mt-12 flex flex-wrap justify-center gap-2"
@@ -72,14 +82,20 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                         {GROUP_FILTERS.map((genre, index) => (
                             <motion.button
                                 key={genre}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                whileHover={{
+                                    scale: 1.05,
+                                    boxShadow:
+                                        '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+                                }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => setSelectedGenre(genre)}
                                 className={`rounded-full px-6 py-2 text-sm font-medium transition-all ${
                                     selectedGenre === genre
                                         ? 'bg-white text-purple-600 shadow-lg'
-                                        : 'bg-white/10 text-white hover:bg-white/20'
+                                        : 'bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20'
                                 }`}
                             >
                                 {genre}
@@ -90,12 +106,12 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
             </section>
 
             {/* Groups Grid */}
-            <section className="relative bg-gray-50 px-4 py-16 sm:px-6 sm:py-24 dark:bg-gray-900">
+            <section className="relative bg-white px-4 py-16 sm:px-6 sm:py-24 dark:bg-gray-900">
                 <div className="mx-auto max-w-7xl">
                     {groups.data.length === 0 ? (
                         <EmptyState
                             icon={
-                                <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                <UsersIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
                             }
                             title="No groups found"
                             message="Try selecting a different genre"
@@ -106,13 +122,14 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                                 className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
                                 layout
                             >
-                                {groups.data.map((group, index) => (
+                                {groups.data.map((group) => (
                                     <motion.div
                                         key={group.id}
+                                        initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, scale: 0.8 }}
-                                        whileHover={{ y: -5, scale: 1.02 }}
-                                        className="group relative overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl dark:bg-gray-800"
+                                        whileHover={{ y: -5 }}
+                                        className="group relative overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:shadow-xl hover:ring-purple-200 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:ring-purple-700"
                                     >
                                         <div className="relative aspect-video overflow-hidden">
                                             <img
@@ -121,7 +138,7 @@ export default function GroupOverview({ groups }: GroupOverviewProps) {
                                                 className="h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-110"
                                                 loading="lazy"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                            <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
                                             {/* Like Button */}
                                             <button

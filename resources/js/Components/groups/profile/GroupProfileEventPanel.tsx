@@ -14,25 +14,6 @@ import {
     UsersIcon,
 } from 'lucide-react';
 
-interface Event {
-    id: number;
-    title: string;
-    date: string;
-    time: string;
-    location: string;
-    type: 'concert' | 'fanmeet' | 'broadcast' | 'release';
-    ticketUrl?: string;
-    capacity: number;
-    status: 'upcoming' | 'ongoing' | 'completed';
-    description?: string;
-    venue?: string;
-    price?: {
-        min: number;
-        max: number;
-        currency: string;
-    };
-}
-
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -160,7 +141,7 @@ export default function GroupProfileEventPanel({ group }: { group: Group }) {
                                                     }}
                                                     whileHover={{ scale: 1.05 }}
                                                     whileTap={{ scale: 0.95 }}
-                                                    className="flex items-center gap-1.5 rounded-full bg-gray-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-gray-700"
+                                                    className="flex items-center gap-1.5 rounded-full bg-gray-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                                                 >
                                                     <MapPinIcon className="h-4 w-4" />
                                                     View on Map
@@ -174,7 +155,7 @@ export default function GroupProfileEventPanel({ group }: { group: Group }) {
                                                         whileTap={{
                                                             scale: 0.95,
                                                         }}
-                                                        className="flex items-center gap-1.5 rounded-full bg-purple-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-purple-700"
+                                                        className="flex items-center gap-1.5 rounded-full bg-purple-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600"
                                                     >
                                                         <TicketIcon className="h-4 w-4" />
                                                         Get Tickets

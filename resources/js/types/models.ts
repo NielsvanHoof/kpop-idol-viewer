@@ -103,7 +103,6 @@ export interface Event {
     updated_at: string;
 }
 
-
 export interface Article {
     id: number;
     title: string;
@@ -143,6 +142,9 @@ export interface RecentlyViewedItem {
     id: number;
     type: string;
     name: string;
+    viewable_type: string;
+    viewable_id: number;
+    viewable: Idol | Group;
     cover_photo: Media;
     group?: string;
     slug: string;

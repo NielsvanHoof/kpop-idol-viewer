@@ -17,6 +17,6 @@ class DashboardData extends Data
 
     public function getMergedLikesAndFollows(): Collection
     {
-        return $this->liked->merge($this->followed)->unique('id');
+        return $this->liked->merge($this->followed)->unique('id')->take(4);
     }
 }

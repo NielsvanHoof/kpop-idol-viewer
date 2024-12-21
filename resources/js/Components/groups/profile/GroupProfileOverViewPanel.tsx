@@ -4,7 +4,6 @@ import { SpotifyAlbumsResponse } from '@/types/spotify';
 import { TabPanel } from '@headlessui/react';
 import { motion } from 'framer-motion';
 import {
-    GlobeIcon,
     HeartIcon,
     MusicIcon,
     SparklesIcon,
@@ -37,33 +36,41 @@ export default function GroupProfileOverViewPanel({
             icon: <UsersIcon />,
             label: 'Members',
             value: `${group.idols_count} Members`,
-            color: 'text-blue-600 dark:text-blue-400',
-            bg: 'bg-blue-50 dark:bg-blue-900/10',
-            ring: 'ring-blue-100 dark:ring-blue-900/30',
+            color: 'text-blue-600',
+            bg: 'bg-blue-50',
+            ring: 'ring-blue-100',
+            darkBg: 'dark:bg-blue-900/10',
+            darkRing: 'dark:ring-blue-900/30',
         },
         {
             icon: <HeartIcon />,
             label: 'Fans',
             value: `${(group.followers.length / 1000000).toFixed(1)}M Fans`,
-            color: 'text-pink-600 dark:text-pink-400',
-            bg: 'bg-pink-50 dark:bg-pink-900/10',
-            ring: 'ring-pink-100 dark:ring-pink-900/30',
+            color: 'text-pink-600',
+            bg: 'bg-pink-50',
+            ring: 'ring-pink-100',
+            darkBg: 'dark:bg-pink-900/10',
+            darkRing: 'dark:ring-pink-900/30',
         },
         {
             icon: <StarIcon />,
             label: 'Rating',
             value: `1.0 / 5.0`,
-            color: 'text-yellow-600 dark:text-yellow-400',
-            bg: 'bg-yellow-50 dark:bg-yellow-900/10',
-            ring: 'ring-yellow-100 dark:ring-yellow-900/30',
+            color: 'text-yellow-600',
+            bg: 'bg-yellow-50',
+            ring: 'ring-yellow-100',
+            darkBg: 'dark:bg-yellow-900/10',
+            darkRing: 'dark:ring-yellow-900/30',
         },
         {
             icon: <MusicIcon />,
             label: 'Albums',
             value: hasSpotifyIntegration ? `${albumCount} Albums` : 'No Data',
-            color: 'text-purple-600 dark:text-purple-400',
-            bg: 'bg-purple-50 dark:bg-purple-900/10',
-            ring: 'ring-purple-100 dark:ring-purple-900/30',
+            color: 'text-purple-600',
+            bg: 'bg-purple-50',
+            ring: 'ring-purple-100',
+            darkBg: 'dark:bg-purple-900/10',
+            darkRing: 'dark:ring-purple-900/30',
         },
     ];
 
@@ -197,9 +204,7 @@ export default function GroupProfileOverViewPanel({
                         </div>
                         <div
                             className="prose mt-4 max-w-none text-gray-600 dark:prose-invert sm:mt-6 dark:text-gray-400"
-                            dangerouslySetInnerHTML={{
-                                __html: bio,
-                            }}
+                            dangerouslySetInnerHTML={{ __html: bio }}
                         />
 
                         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
@@ -209,9 +214,11 @@ export default function GroupProfileOverViewPanel({
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
-                                    className={`rounded-lg ${stat.bg} p-3 text-center ring-1 ${stat.ring} sm:p-4`}
+                                    className={`rounded-lg ${stat.bg} ${stat.darkBg} p-3 text-center ring-1 ${stat.ring} ${stat.darkRing} sm:p-4`}
                                 >
-                                    {stat.icon}
+                                    <div className={`${stat.color}`}>
+                                        {stat.icon}
+                                    </div>
                                     <div
                                         className={`mt-1.5 text-sm font-medium ${stat.color} sm:mt-2`}
                                     >
@@ -226,9 +233,8 @@ export default function GroupProfileOverViewPanel({
                     {renderLatestReleaseSection()}
                 </div>
 
-                {/* Rest of the component remains the same */}
+                {/* Quick Facts */}
                 <div className="space-y-6 lg:col-span-4 lg:space-y-8">
-                    {/* Quick Facts */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -257,29 +263,6 @@ export default function GroupProfileOverViewPanel({
                                 </motion.div>
                             ))}
                         </dl>
-                    </motion.div>
-
-                    {/* Social Stats */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="rounded-xl bg-white p-4 shadow-lg ring-1 ring-gray-200 sm:p-6 dark:bg-gray-800 dark:ring-gray-800"
-                    >
-                        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
-                            <GlobeIcon className="h-5 w-5 text-purple-500" />
-                            Social Stats
-                        </h3>
-                        <div className="mt-4 grid grid-cols-2 gap-4">
-                            <div className="rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-900">
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    {group.followers.length.toLocaleString()}
-                                </p>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    Followers
-                                </p>
-                            </div>
-                        </div>
                     </motion.div>
                 </div>
             </div>

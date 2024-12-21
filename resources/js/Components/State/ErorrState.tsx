@@ -26,7 +26,8 @@ export default function ErrorState({
         <div
             className={clsx(
                 'flex items-center justify-center',
-                fullScreen && 'fixed inset-0 bg-gray-50 dark:bg-gray-900',
+                fullScreen &&
+                    'fixed inset-0 bg-white/90 backdrop-blur-sm dark:bg-gray-900/90',
                 !fullScreen && 'w-full py-12',
                 className,
             )}
@@ -36,7 +37,7 @@ export default function ErrorState({
                 animate={{ opacity: 1, y: 0 }}
                 className="max-w-md px-4 text-center sm:px-6 lg:px-8"
             >
-                <TriangleAlert className="mx-auto h-12 w-12 text-red-500" />
+                <TriangleAlert className="mx-auto h-12 w-12 text-red-500 dark:text-red-400" />
                 <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
                     {title}
                 </h3>
@@ -50,9 +51,9 @@ export default function ErrorState({
                         onClick={action.onClick}
                         className={clsx(
                             'mt-6 inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold',
-                            'bg-purple-600 text-white shadow-sm',
-                            'hover:bg-purple-500',
-                            'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2',
+                            'bg-purple-600 text-white shadow-sm dark:bg-purple-500',
+                            'hover:bg-purple-500 dark:hover:bg-purple-400',
+                            'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
                         )}
                     >
                         {action.label}

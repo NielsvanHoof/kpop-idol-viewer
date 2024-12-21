@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { HeartIcon } from 'lucide-react';
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
     visible: {
         opacity: 1,
         y: 0,
@@ -16,7 +15,7 @@ export default function GroupProfileMembersCard({ idol }: { idol: Idol }) {
     return (
         <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-lg bg-gray-50 ring-1 ring-gray-200 transition-all hover:shadow-lg active:scale-[0.98] dark:bg-gray-900 dark:ring-gray-800"
+            className="group relative overflow-hidden rounded-lg bg-white ring-1 ring-gray-200 transition-all hover:shadow-lg active:scale-[0.98] dark:bg-gray-800 dark:ring-gray-700"
         >
             <Link
                 href={route('idols.show', idol.slug)}
@@ -29,8 +28,8 @@ export default function GroupProfileMembersCard({ idol }: { idol: Idol }) {
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
                     />
-                    {/* Mobile gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100" />
+                    {/* Mobile overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100" />
 
                     {/* Mobile tap indicator */}
                     <div className="absolute inset-x-4 bottom-4 flex items-center justify-center sm:hidden">

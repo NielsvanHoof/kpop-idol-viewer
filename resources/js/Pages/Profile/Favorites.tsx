@@ -1,5 +1,5 @@
 import IdolCard from '@/Components/Idols/Overview/IdolCard';
-import AuthLayout from '@/Layouts/AuthLayout';
+import MainLayout from '@/Layouts/MainLayout';
 import { Idol } from '@/types/models';
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
@@ -44,24 +44,30 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
             label: 'Total Likes',
             value: meta.totalLikes,
             icon: <HeartIcon className="h-6 w-6 text-red-500" />,
+            bgColor: 'bg-red-50 dark:bg-red-900/10',
+            ringColor: 'ring-red-200 dark:ring-red-900/30',
         },
         {
             label: 'Following',
             value: meta.totalFollowing,
             icon: <UsersIcon className="h-6 w-6 text-blue-500" />,
+            bgColor: 'bg-blue-50 dark:bg-blue-900/10',
+            ringColor: 'ring-blue-200 dark:ring-blue-900/30',
         },
         {
             label: 'Last Updated',
             value: new Date(meta.lastUpdated).toLocaleDateString(),
             icon: <CalendarIcon className="h-6 w-6 text-green-500" />,
+            bgColor: 'bg-green-50 dark:bg-green-900/10',
+            ringColor: 'ring-green-200 dark:ring-green-900/30',
         },
     ];
 
     return (
-        <AuthLayout>
+        <MainLayout>
             <Head title="Favorite Idols | KPOP Project" />
 
-            <div className="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
+            <div className="min-h-screen bg-white py-8 dark:bg-gray-900">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-6">
                         <Link
@@ -96,8 +102,8 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.05 }}
-                                className="overflow-hidden rounded-xl bg-white p-4 shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
+                                whileHover={{ scale: 1.02 }}
+                                className={`overflow-hidden rounded-xl ${stat.bgColor} p-4 shadow-sm ring-1 ${stat.ringColor}`}
                             >
                                 {stat.icon}
                                 <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
@@ -116,7 +122,7 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
                         variants={containerVariants}
                         className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     >
-                        {favorites.map((idol, index) => (
+                        {favorites.map((idol) => (
                             <motion.div
                                 key={idol.id}
                                 variants={itemVariants}
@@ -137,7 +143,7 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
                             animate={{ opacity: 1 }}
                             className="mt-12 text-center"
                         >
-                            <div className="rounded-lg bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                            <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
                                 <HeartIcon className="mx-auto h-12 w-12 text-gray-400" />
                                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                                     No favorites yet
@@ -148,7 +154,7 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
                                 </p>
                                 <Link
                                     href={route('idols.index')}
-                                    className="mt-4 inline-flex items-center rounded-full bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
+                                    className="mt-4 inline-flex items-center rounded-full bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                                 >
                                     Explore Idols
                                 </Link>
@@ -157,6 +163,6 @@ export default function Favorites({ favorites, meta }: FavoritesProps) {
                     )}
                 </div>
             </div>
-        </AuthLayout>
+        </MainLayout>
     );
 }

@@ -1,9 +1,8 @@
+import SEO from '@/Components/Common/SEO';
 import FeatureSection from '@/Components/Index/FeatureSection';
 import HeroSection from '@/Components/Index/HeroSection';
 import LatestNewsSection from '@/Components/Index/LatestNewsSection';
 import PopulairIdols from '@/Components/Index/PopulairIdols';
-import SEO from '@/Components/Common/SEO';
-import SocialShare from '@/Components/Common/SocialShare';
 import MainLayout from '@/Layouts/MainLayout';
 import { Article, Idol } from '@/types/models';
 import { motion } from 'framer-motion';
@@ -41,16 +40,15 @@ export default function Welcome({
                 title="KPOP Project - Your Ultimate K-pop Destination"
                 description="Discover the latest K-pop news, music, and exclusive content."
             />
-            <SocialShare />
 
             <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
-                className="relative"
+                className="relative bg-gray-50"
             >
                 <div className="pointer-events-none fixed inset-0 flex items-center justify-center">
-                    <div className="animate-pulse-slow h-[500px] w-[800px] rounded-full bg-purple-100/50 blur-3xl filter dark:bg-purple-900/20" />
+                    <div className="animate-pulse-slow h-[500px] w-[800px] rounded-full bg-purple-200 blur-3xl filter dark:bg-purple-900/20" />
                 </div>
 
                 {/* Hero Section */}

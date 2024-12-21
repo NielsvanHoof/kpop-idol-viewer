@@ -1,5 +1,5 @@
+import { motion } from 'framer-motion';
 import { TrophyIcon } from 'lucide-react';
-import { motion } from 'motion/react';
 
 interface PositionDistributionCardProps {
     positions: Record<string, number>;
@@ -23,7 +23,7 @@ export default function GroupProfileMembersDistributtonCard({
                 {Object.entries(positions || {}).map(([position, count]) => (
                     <div
                         key={position}
-                        className="flex items-center justify-between"
+                        className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 dark:bg-gray-900"
                     >
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                             {position}
