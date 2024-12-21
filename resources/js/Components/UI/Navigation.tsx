@@ -80,7 +80,7 @@ export default function Navigation() {
             animate={{ y: 0 }}
             className={`sticky top-0 z-50 transition-all duration-500 ${
                 isScrolled
-                    ? 'bg-white/80 shadow-lg backdrop-blur-md dark:bg-gray-800/80'
+                    ? 'bg-white/80 shadow-lg backdrop-blur-md dark:bg-gray-900/80'
                     : 'bg-transparent'
             }`}
         >

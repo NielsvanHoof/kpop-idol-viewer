@@ -1,9 +1,6 @@
 import {
     FacebookIcon,
     InstagramIcon,
-    MailIcon,
-    MapPinIcon,
-    PhoneIcon,
     TwitterIcon,
     YoutubeIcon,
 } from 'lucide-react';
@@ -48,35 +45,9 @@ const socialLinks = [
     },
 ];
 
-const contactInfo = [
-    {
-        icon: <MailIcon className="h-4 w-4" />,
-        text: 'contact@kpopproject.com',
-        href: 'mailto:contact@kpopproject.com',
-    },
-    {
-        icon: <PhoneIcon className="h-4 w-4" />,
-        text: '+1 234 567 890',
-        href: 'tel:+1234567890',
-    },
-    {
-        icon: <MapPinIcon className="h-4 w-4" />,
-        text: 'Seoul, South Korea',
-        href: '#',
-    },
-];
-
 export default function Footer() {
     return (
-        <footer className="relative overflow-hidden bg-white dark:bg-gray-800">
-            {/* Animated Background */}
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 opacity-5">
-                    <div className="animate-pulse-slow absolute left-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-purple-600/30 blur-3xl" />
-                    <div className="animate-pulse-slow absolute right-1/4 top-1/2 h-[600px] w-[600px] rounded-full bg-pink-600/20 blur-3xl" />
-                </div>
-            </div>
-
+        <footer className="relative overflow-hidden bg-white py-16 dark:bg-gray-900">
             <div className="relative">
                 <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                     {/* Main Footer Grid */}

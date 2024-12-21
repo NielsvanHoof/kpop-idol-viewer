@@ -9,56 +9,65 @@ interface IdolProfileMusicFilterProps {
     totalAlbums: number;
 }
 
+const filterTypes: { label: string; value: AlbumType; color: string }[] = [
+    {
+        label: 'All',
+        value: 'all',
+        color: 'bg-purple-600',
+    },
+    {
+        label: 'Albums',
+        value: 'album',
+        color: 'bg-blue-600',
+    },
+    {
+        label: 'Singles',
+        value: 'single',
+        color: 'bg-pink-600',
+    },
+];
+
 export default function IdolProfileMusicFilter({
     selectedType,
     setSelectedType,
     totalAlbums,
 }: IdolProfileMusicFilterProps) {
-    const filterTypes: { label: string; value: AlbumType }[] = [
-        { label: 'All', value: 'all' },
-        { label: 'Albums', value: 'album' },
-        { label: 'Singles', value: 'single' },
-    ];
-
     return (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">
-                {filterTypes.map((type) => (
+                {filterTypes.map((type, index) => (
                     <motion.button
                         key={type.value}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setSelectedType(type.value)}
-                        className={`flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:text-sm ${
+                        className={`group relative overflow-hidden rounded-full px-4 py-1.5 text-xs font-medium shadow-sm transition-all duration-300 hover:shadow-md sm:px-5 sm:text-sm ${
                             selectedType === type.value
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                                ? 'text-white'
+                                : 'bg-white/80 text-gray-600 hover:text-gray-900 dark:bg-gray-800/80 dark:text-gray-400 dark:hover:text-white'
                         }`}
                     >
-                        {type.label}
+                        <span className="relative z-10">{type.label}</span>
+                        <div
+                            className={`absolute inset-0 ${type.color} ${
+                                selectedType === type.value
+                                    ? 'opacity-100'
+                                    : 'opacity-0 transition-opacity duration-300 group-hover:opacity-10'
+                            }`}
+                        />
                     </motion.button>
                 ))}
             </div>
-            <span className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                {totalAlbums} {totalAlbums === 1 ? 'Album' : 'Albums'}
-            </span>
 
-            <div className="flex items-center justify-end gap-2">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Powered by
-                </span>
-                <a
-                    href="https://spotify.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1"
-                >
-                    <img
-                        src="https://www.vectorlogo.zone/logos/spotify/spotify-icon.svg"
-                        alt="Spotify"
-                        className="h-4 w-auto"
-                    />
-                </a>
-            </div>
+            <motion.span
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-purple-100/80 px-3 py-1.5 text-xs font-medium text-purple-600 backdrop-blur-sm transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400"
+            >
+                {totalAlbums} {totalAlbums === 1 ? 'Album' : 'Albums'}
+            </motion.span>
         </div>
     );
 }

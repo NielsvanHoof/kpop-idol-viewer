@@ -1,4 +1,4 @@
-import { Article, Event, Idol } from '@/types/models';
+import { Article, Idol } from '@/types/models';
 import { SpotifyAlbum } from '@/types/spotify';
 
 export const mockRecommendedTracks: SpotifyAlbum[] = [
@@ -37,9 +37,12 @@ export const mockRecommendedTracks: SpotifyAlbum[] = [
 export const mockUpcomingEvents: Event[] = [
     {
         id: 1,
-        title: 'BLACKPINK World Tour [BORN PINK]',
+        name: 'BLACKPINK World Tour [BORN PINK]',
         date: '2024-03-15',
-        location: 'Seoul Olympic Stadium',
+        location: {
+            lat: 37.566535,
+            lng: 126.9779692,
+        },
         type: 'concert',
         participants: [
             {
@@ -51,9 +54,12 @@ export const mockUpcomingEvents: Event[] = [
     },
     {
         id: 2,
-        title: 'K-Pop Festival 2024',
+        name: 'K-Pop Festival 2024',
         date: '2024-04-01',
-        location: 'Tokyo Dome',
+        location: {
+            lat: 35.6585805,
+            lng: 139.7454329,
+        },
         type: 'festival',
         participants: [
             {
@@ -70,9 +76,12 @@ export const mockUpcomingEvents: Event[] = [
     },
     {
         id: 3,
-        title: 'Fan Meeting: Spring Day',
+        name: 'Fan Meeting: Spring Day',
         date: '2024-04-15',
-        location: 'COEX Hall',
+        location: {
+            lat: 35.6585805,
+            lng: 139.7454329,
+        },
         type: 'fan_meeting',
         participants: [
             {

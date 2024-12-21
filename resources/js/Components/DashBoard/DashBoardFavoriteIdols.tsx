@@ -1,58 +1,70 @@
 import { Idol } from '@/types/models';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { HeartIcon } from 'lucide-react';
+import { HeartIcon, UsersIcon } from 'lucide-react';
 
-export default function DashBoardFavoriteIdolCard({
-    idol,
-    index,
-}: {
-    idol: Idol;
-    index: number;
-}) {
+interface FavoriteIdolsProps {
+    idols: Idol[];
+}
+
+export default function DashBoardFavoriteIdols({ idols }: FavoriteIdolsProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="group relative overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
+            className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
         >
-            {/* Image Section */}
-            <div className="relative aspect-[3/4] overflow-hidden">
-                <img
-                    src={idol.cover_photo.url}
-                    alt={idol.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-                {/* View Profile Button */}
+            <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <HeartIcon className="h-6 w-6 text-pink-500" />
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                        Favorite Idols
+                    </h2>
+                </div>
                 <Link
-                    href={route('idols.show', idol.slug)}
-                    className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    href={route('favorites')}
+                    className="text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                 >
-                    <span className="rounded-full bg-white/20 px-6 py-2 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:bg-white/30 active:scale-95">
-                        View Profile
-                    </span>
+                    View all
                 </Link>
             </div>
 
-            {/* Info Section */}
-            <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                    {idol.name}
-                </h3>
-                <p className="mt-1 text-sm font-medium text-purple-600 dark:text-purple-400">
-                    {idol.group.name}
-                </p>
-
-                {/* Stats Section */}
-                <div className="mt-4 flex items-center gap-4">
-                    <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                        <HeartIcon className="h-5 w-5 text-red-500" />
-                        {idol.followers.length}
-                    </span>
-                </div>
+            <div className="space-y-4">
+                {idols.map((idol, index) => (
+                    <motion.div
+                        key={idol.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group relative overflow-hidden rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
+                    >
+                        <Link href={route('idols.show', idol.slug)}>
+                            <div className="flex items-center gap-4 p-4">
+                                <div className="relative h-16 w-16 overflow-hidden rounded-full ring-2 ring-white/20 dark:ring-black/20">
+                                    <img
+                                        src={idol.cover_photo.url}
+                                        alt={idol.name}
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-gray-900 dark:text-white">
+                                        {idol.name}
+                                    </h3>
+                                    <p className="text-sm text-purple-600 dark:text-purple-400">
+                                        {idol.group.name}
+                                    </p>
+                                    <div className="mt-1 flex items-center gap-3">
+                                        <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                                            <UsersIcon className="h-4 w-4" />
+                                            {idol.followers.length}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    </motion.div>
+                ))}
             </div>
         </motion.div>
     );

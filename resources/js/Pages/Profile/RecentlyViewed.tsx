@@ -1,5 +1,5 @@
 import RecentlyViewedSection from '@/Components/RecentlyViewed/RecentlyViewedSection';
-import AuthLayout from '@/Layouts/AuthLayout';
+import MainLayout from '@/Layouts/MainLayout';
 import { RecentlyViewedItem } from '@/types/models';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
@@ -21,15 +21,12 @@ export default function RecentlyViewed({
     const { auth } = usePage().props;
 
     return (
-        <AuthLayout>
+        <MainLayout>
             <Head title="Recently Viewed | KPOP Project" />
 
-            {/* Profile Header - Similar to Dashboard */}
+            {/* Profile Header */}
             <section className="relative mb-16 h-[35vh] min-h-[250px] overflow-hidden sm:mb-20 sm:h-[40vh] sm:min-h-[300px]">
-                <div className="absolute inset-0 bg-gradient-to-b from-purple-600 to-black opacity-75" />
-                <div className="animate-pulse-slow absolute inset-0 blur-3xl">
-                    <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-purple-100/50 dark:bg-purple-900/20" />
-                </div>
+                <div className="absolute inset-0 bg-purple-600/10 dark:bg-purple-900/20" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-4 pb-8 sm:p-6 lg:p-8">
                     <motion.div
@@ -40,7 +37,7 @@ export default function RecentlyViewed({
                         <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-end">
                             <motion.div
                                 whileHover={{ scale: 1.1 }}
-                                className="h-28 w-28 overflow-hidden rounded-full ring-4 ring-white/90"
+                                className="h-28 w-28 overflow-hidden rounded-full ring-4 ring-white/90 dark:ring-gray-800"
                             >
                                 <img
                                     src={auth.user.profile_photo}
@@ -52,15 +49,15 @@ export default function RecentlyViewed({
                                 <motion.span
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="inline-flex items-center rounded-full bg-purple-600 px-4 py-1 text-sm font-medium text-white backdrop-blur-sm"
+                                    className="inline-flex items-center rounded-full bg-purple-600 px-4 py-1 text-sm font-medium text-white"
                                 >
                                     <ClockIcon className="mr-1.5 h-4 w-4" />
                                     Activity History
                                 </motion.span>
-                                <h1 className="mt-2 text-3xl font-bold text-white">
+                                <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
                                     Recently Viewed
                                 </h1>
-                                <p className="mt-1 text-lg text-gray-200">
+                                <p className="mt-1 text-lg text-gray-600 dark:text-gray-400">
                                     Keep track of your K-pop journey
                                 </p>
                             </div>
@@ -69,7 +66,7 @@ export default function RecentlyViewed({
                 </div>
             </section>
 
-            <div className="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
+            <div className="min-h-screen bg-white py-8 dark:bg-gray-900">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-6">
                         <Link
@@ -90,6 +87,9 @@ export default function RecentlyViewed({
                                 ),
                                 label: 'Total Views',
                                 value: meta.totalViews,
+                                bgColor: 'bg-blue-50 dark:bg-blue-900/10',
+                                ringColor:
+                                    'ring-blue-200 dark:ring-blue-900/30',
                             },
                             {
                                 icon: (
@@ -97,6 +97,9 @@ export default function RecentlyViewed({
                                 ),
                                 label: 'Unique Items',
                                 value: meta.uniqueItems,
+                                bgColor: 'bg-green-50 dark:bg-green-900/10',
+                                ringColor:
+                                    'ring-green-200 dark:ring-green-900/30',
                             },
                             {
                                 icon: (
@@ -106,6 +109,9 @@ export default function RecentlyViewed({
                                 value: new Date(
                                     meta.lastViewed,
                                 ).toLocaleDateString(),
+                                bgColor: 'bg-purple-50 dark:bg-purple-900/10',
+                                ringColor:
+                                    'ring-purple-200 dark:ring-purple-900/30',
                             },
                         ].map((stat, index) => (
                             <motion.div
@@ -113,8 +119,8 @@ export default function RecentlyViewed({
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.05 }}
-                                className="overflow-hidden rounded-xl bg-white p-4 shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
+                                whileHover={{ scale: 1.02 }}
+                                className={`overflow-hidden rounded-xl ${stat.bgColor} p-4 shadow-sm ring-1 ${stat.ringColor}`}
                             >
                                 {stat.icon}
                                 <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
@@ -134,6 +140,6 @@ export default function RecentlyViewed({
                     </div>
                 </div>
             </div>
-        </AuthLayout>
+        </MainLayout>
     );
 }

@@ -17,26 +17,20 @@ export default function LoadingState({
     return (
         <div
             className={clsx(
-                'flex flex-col items-center justify-center',
+                'flex items-center justify-center',
                 fullScreen &&
-                    'fixed inset-0 bg-gray-50/90 backdrop-blur-sm dark:bg-gray-900/90',
-                !fullScreen && 'w-full',
+                    'fixed inset-0 bg-white/90 backdrop-blur-sm dark:bg-gray-900/90',
+                !fullScreen && 'w-full py-12',
                 className,
             )}
         >
             <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="max-w-md px-4 text-center sm:px-6 lg:px-8"
             >
-                <div
-                    className={clsx(
-                        'animate-spin rounded-full border-t-4 border-purple-600',
-                        'h-12 w-12 sm:h-16 sm:w-16',
-                        'mb-4',
-                    )}
-                />
-                <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">
+                <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-purple-100 border-t-purple-600 sm:h-16 sm:w-16 dark:border-purple-900 dark:border-t-purple-400" />
+                <p className="mt-4 text-sm text-gray-600 sm:text-base dark:text-gray-400">
                     {message}
                 </p>
                 {children}

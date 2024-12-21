@@ -1,5 +1,6 @@
 import { Button, Input } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { debounce } from 'lodash';
 import {
     CheckCircleIcon,
@@ -7,7 +8,6 @@ import {
     RefreshCcwDotIcon,
     SparklesIcon,
 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function NewsLetterSection() {
@@ -18,11 +18,11 @@ export default function NewsLetterSection() {
         email: '',
     });
 
-    const debouncedSubmit = useCallback(
-        debounce(() => {
+    const debouncedSubmit = useCallback(() => {
+        return debounce((formData: typeof data) => {
             post('/subscribe', {
                 preserveScroll: true,
-                data,
+                data: formData,
                 onSuccess: () => {
                     setIsNewsletterSuccess(true);
                     setIsLoading(false);
@@ -31,13 +31,13 @@ export default function NewsLetterSection() {
                     setIsLoading(false);
                 },
             });
-        }, 500),
-        [data],
-    );
+        }, 500);
+    }, [post]);
 
     useEffect(() => {
+        const submitFn = debouncedSubmit();
         return () => {
-            debouncedSubmit.cancel();
+            submitFn.cancel();
         };
     }, [debouncedSubmit]);
 
@@ -45,7 +45,7 @@ export default function NewsLetterSection() {
         e.preventDefault();
         if (isLoading) return;
         setIsLoading(true);
-        debouncedSubmit();
+        debouncedSubmit()(data);
     };
 
     return (
@@ -53,23 +53,42 @@ export default function NewsLetterSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-700"
+            className="mt-8 rounded-xl bg-gray-50 p-6 sm:p-8 dark:bg-gray-800"
         >
             <div className="text-center lg:text-left">
-                <span className="mb-4 inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                <motion.span
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="mb-4 inline-flex items-center rounded-full bg-purple-100 px-3 py-1.5 text-sm font-medium text-purple-700 ring-1 ring-purple-200 transition-colors hover:bg-purple-200 dark:bg-gray-700 dark:text-purple-300 dark:ring-purple-600"
+                >
                     <MailIcon className="mr-1.5 h-4 w-4" />
                     Newsletter
-                </span>
-                <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-white">
+                </motion.span>
+                <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mt-2 text-lg font-semibold text-gray-900 dark:text-white"
+                >
                     Stay in the K-pop Loop
-                </h3>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                </motion.h3>
+                <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mt-2 text-sm text-gray-600 dark:text-gray-300"
+                >
                     Get exclusive updates and special offers delivered straight
                     to your inbox.
-                </p>
+                </motion.p>
             </div>
 
-            <div className="mt-6">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-6"
+            >
                 <form
                     onSubmit={handleNewsletterSubmit}
                     className="flex flex-col gap-3 sm:flex-row"
@@ -80,27 +99,34 @@ export default function NewsLetterSection() {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="Enter your email address"
-                            className="w-full rounded-lg border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 transition-colors focus:border-purple-500 focus:ring-purple-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+                            className="w-full rounded-lg border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 transition-colors focus:border-purple-500 focus:ring-purple-500 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-400"
                             required
                         />
                     </div>
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="inline-flex items-center justify-center rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 dark:hover:bg-purple-500"
+                    <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                     >
-                        {isLoading ? (
-                            <>
-                                <RefreshCcwDotIcon className="mr-2 h-4 w-4 animate-spin" />
-                                Subscribing...
-                            </>
-                        ) : (
-                            <>
-                                Subscribe
-                                <SparklesIcon className="ml-2 h-4 w-4" />
-                            </>
-                        )}
-                    </Button>
+                        <Button
+                            type="submit"
+                            disabled={isLoading}
+                            className="group relative w-full overflow-hidden rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-purple-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto dark:bg-purple-600 dark:hover:bg-purple-700"
+                        >
+                            <span className="relative z-10 inline-flex items-center">
+                                {isLoading ? (
+                                    <>
+                                        <RefreshCcwDotIcon className="mr-2 h-4 w-4 animate-spin" />
+                                        Subscribing...
+                                    </>
+                                ) : (
+                                    <>
+                                        Subscribe
+                                        <SparklesIcon className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+                                    </>
+                                )}
+                            </span>
+                        </Button>
+                    </motion.div>
                 </form>
 
                 <AnimatePresence mode="wait">
@@ -117,7 +143,7 @@ export default function NewsLetterSection() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </div>
+            </motion.div>
         </motion.div>
     );
 }

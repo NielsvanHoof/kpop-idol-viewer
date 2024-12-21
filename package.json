@@ -5,9 +5,12 @@
         "build": "tsc && vite build",
         "dev": "vite",
         "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix",
-        "prepare": "husky init"
+        "prepare": "husky"
     },
     "devDependencies": {
+        "@eslint/compat": "^1.2.4",
+        "@eslint/eslintrc": "^3.2.0",
+        "@eslint/js": "^9.17.0",
         "@headlessui/react": "^2.2.0",
         "@inertiajs/react": "^2.0",
         "@tailwindcss/forms": "^0.5.9",
@@ -29,6 +32,7 @@
         "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-react": "^7.37.2",
         "eslint-plugin-react-hooks": "^5.0.0",
+        "globals": "^15.14.0",
         "husky": "^9.1.7",
         "laravel-vite-plugin": "^1.0",
         "lint-staged": "^15.2.11",

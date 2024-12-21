@@ -1,5 +1,4 @@
 import EmptyState from '@/Components/State/EmptyState';
-import { Group } from '@/types/models';
 import {
     SpotifyAlbumsResponse,
     SpotifyArtistInformationResponse,
@@ -14,13 +13,11 @@ import {
 } from 'lucide-react';
 
 interface GroupProfileDiscoveryPanelProps {
-    group: Group;
     songs: SpotifyAlbumsResponse | null;
     artistInformation: SpotifyArtistInformationResponse | null;
 }
 
 export default function GroupProfileDiscoveryPanel({
-    group,
     songs,
     artistInformation,
 }: GroupProfileDiscoveryPanelProps) {
@@ -32,16 +29,17 @@ export default function GroupProfileDiscoveryPanel({
                 ? `${(artistInformation.followers.total / 1000000).toFixed(1)}M`
                 : 'N/A',
             label: 'Monthly Listeners',
-            color: 'text-green-600 dark:text-green-400',
-            bg: 'bg-green-50 dark:bg-green-900/10',
-            ring: 'ring-green-100 dark:ring-green-900/30',
+            color: 'text-green-600',
+            bg: 'bg-green-50',
+            ring: 'ring-green-100',
+            darkColor: 'dark:text-green-400',
+            darkBg: 'dark:bg-green-900/10',
+            darkRing: 'dark:ring-green-900/30',
         },
     ];
 
     const albums =
         songs?.items?.filter((item) => item.album_type === 'album') || [];
-    const singles =
-        songs?.items?.filter((item) => item.album_type === 'single') || [];
 
     return (
         <TabPanel>
@@ -129,26 +127,28 @@ export default function GroupProfileDiscoveryPanel({
                             {streamingStats.map((stat) => (
                                 <div
                                     key={stat.platform}
-                                    className={`rounded-lg ${stat.bg} p-4 ring-1 ${stat.ring}`}
+                                    className={`rounded-lg ${stat.bg} ${stat.darkBg} p-4 ring-1 ${stat.ring} ${stat.darkRing}`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <stat.icon
-                                                className={`h-5 w-5 ${stat.color}`}
+                                                className={`h-5 w-5 ${stat.color} ${stat.darkColor}`}
                                             />
                                             <span
-                                                className={`font-medium ${stat.color}`}
+                                                className={`font-medium ${stat.color} ${stat.darkColor}`}
                                             >
                                                 {stat.platform}
                                             </span>
                                         </div>
                                         <span
-                                            className={`text-lg font-bold ${stat.color}`}
+                                            className={`text-lg font-bold ${stat.color} ${stat.darkColor}`}
                                         >
                                             {stat.value}
                                         </span>
                                     </div>
-                                    <p className={`mt-1 text-sm ${stat.color}`}>
+                                    <p
+                                        className={`mt-1 text-sm ${stat.color} ${stat.darkColor}`}
+                                    >
                                         {stat.label}
                                     </p>
                                 </div>

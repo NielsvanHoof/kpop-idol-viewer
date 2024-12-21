@@ -101,31 +101,30 @@ export default function IdolOverview({
         }
     };
 
-    const handleLike = useCallback(
-        debounce((idol: Idol) => {
+    const handleLike = useCallback(() => {
+        return debounce((idolId: number) => {
             setIsLoading(true);
 
             axios
                 .post(`like`, {
                     type: 'idol',
-                    idol_id: idol.id,
+                    idol_id: idolId,
                 })
                 .then(() => {
                     setIsLiked((prev) => {
                         const newLiked = { ...prev };
-                        newLiked[idol.id] = true;
+                        newLiked[idolId] = true;
                         return newLiked;
                     });
                 })
                 .finally(() => {
                     setIsLoading(false);
                 });
-        }, 1000),
-        [],
-    );
+        }, 1000);
+    }, []);
 
-    const handleUnlike = useCallback(
-        debounce((idol: Idol) => {
+    const handleUnlike = useCallback(() => {
+        return debounce((idol: Idol) => {
             setIsLoading(true);
 
             axios
@@ -143,28 +142,41 @@ export default function IdolOverview({
                 .finally(() => {
                     setIsLoading(false);
                 });
-        }, 1000),
-        [],
-    );
+        }, 1000);
+    }, []);
+
+    useEffect(() => {
+        const likeFn = handleLike();
+        const unlikeFn = handleUnlike();
+        return () => {
+            likeFn.cancel();
+            unlikeFn.cancel();
+        };
+    }, [handleLike, handleUnlike]);
 
     return (
         <MainLayout>
             <Head title="K-pop Idols | Discover Amazing Artists" />
 
-            <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <main className="min-h-screen bg-white dark:bg-gray-900">
                 {/* Hero Section */}
                 <section className="relative bg-white/80 backdrop-blur-sm dark:bg-gray-900/80">
-                    <div className="absolute inset-0">
-                        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] opacity-30 [background-size:16px_16px] dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)]" />
-                    </div>
-
                     <div className="relative px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
                         <motion.div
                             initial="hidden"
                             animate="visible"
                             className="mx-auto max-w-5xl text-center"
                         >
-                            <motion.h1 className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
+                            <motion.div className="mb-8 flex justify-center">
+                                <span className="inline-flex items-center gap-2 rounded-full bg-purple-100 px-4 py-2 text-purple-700 ring-1 ring-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:ring-purple-700">
+                                    <span className="h-2 w-2 rounded-full bg-purple-600" />
+                                    <span className="text-sm font-medium">
+                                        Browse Artists
+                                    </span>
+                                </span>
+                            </motion.div>
+
+                            <motion.h1 className="mt-6 text-4xl font-bold tracking-tight text-purple-700 sm:text-5xl dark:text-purple-400">
                                 K-pop Idols & Artists
                             </motion.h1>
 
@@ -187,7 +199,7 @@ export default function IdolOverview({
                 </section>
 
                 {/* Grid Section */}
-                <section className="relative bg-gray-50 px-4 py-8 sm:py-16 lg:py-24 dark:bg-gray-900">
+                <section className="relative px-4 py-8 sm:py-16 lg:py-24">
                     <div className="relative mx-auto max-w-7xl">
                         {idols.data.length > 0 ? (
                             <>
@@ -199,8 +211,12 @@ export default function IdolOverview({
                                             idol={idol}
                                             isLiked={isLiked[idol.id]}
                                             showLikeButton={true}
-                                            onLike={handleLike}
-                                            onUnlike={handleUnlike}
+                                            onLike={(idol) =>
+                                                handleLike()(idol.id)
+                                            }
+                                            onUnlike={(idol) =>
+                                                handleUnlike()(idol)
+                                            }
                                         />
                                     ))}
                                 </div>
@@ -212,7 +228,7 @@ export default function IdolOverview({
                                             whileTap={{ scale: 0.95 }}
                                             onClick={handleLoadMore}
                                             disabled={isLoading}
-                                            className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                            className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-all hover:bg-purple-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
                                         >
                                             {isLoading && (
                                                 <Loader2Icon className="h-4 w-4 animate-spin" />
@@ -229,7 +245,7 @@ export default function IdolOverview({
                                 title="No idols found"
                                 message="Try adjusting your filters or search terms to find what you're looking for."
                                 icon={
-                                    <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                    <UsersIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
                                 }
                                 action={{
                                     label: 'Clear Filters',

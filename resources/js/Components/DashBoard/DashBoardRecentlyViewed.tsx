@@ -1,59 +1,72 @@
 import { RecentlyViewedItem } from '@/types/models';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { ClockIcon } from 'lucide-react';
+interface DashboardRecentlyViewedProps {
+    items: RecentlyViewedItem[];
+}
 
-export default function DashBoardRecentlyViewedSection({
-    recentlyViewed,
-}: {
-    recentlyViewed: RecentlyViewedItem[];
-}) {
+export default function DashboardRecentlyViewed({
+    items,
+}: DashboardRecentlyViewedProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3"
+            className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
         >
-            {recentlyViewed.map((item, index) => (
+            <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <ClockIcon className="h-6 w-6 text-blue-500" />
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                        Recently Viewed
+                    </h2>
+                </div>
                 <Link
-                    key={item.id}
-                    href={
-                        item.type === 'Idol'
-                            ? route('idols.show', item.slug)
-                            : route('groups.show', item.slug)
-                    }
+                    href={route('recently-viewed')}
+                    className="text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                 >
+                    View all
+                </Link>
+            </div>
+
+            <div className="space-y-4">
+                {items.map((item, index) => (
                     <motion.div
                         key={item.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex transform items-center gap-6 rounded-xl bg-white p-5 shadow-lg ring-1 ring-gray-200 transition duration-300 ease-in-out hover:scale-105 hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
+                        className="group relative overflow-hidden rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
                     >
-                        <img
-                            src={item.cover_photo.url}
-                            alt={`Profile picture of ${item.name}`}
-                            className="h-20 w-20 rounded-full border-2 border-gray-300 object-cover dark:border-gray-700"
-                        />
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                                {item.name}
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {item.type === 'Idol' ? (
-                                    <span className="inline-block rounded-full bg-indigo-600 px-2 py-1 text-xs font-medium text-white">
-                                        Group: {item.group}
-                                    </span>
-                                ) : (
-                                    <span className="inline-block rounded-full bg-gray-500 px-2 py-1 text-xs font-medium text-white">
-                                        Group
-                                    </span>
-                                )}
-                            </p>
-                        </div>
+                        <Link
+                            href={
+                                'group' in item
+                                    ? route('idols.show', item.slug)
+                                    : route('groups.show', item.slug)
+                            }
+                        >
+                            <div className="flex items-center gap-4 p-4">
+                                <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-white/20 dark:ring-black/20">
+                                    <img
+                                        src={item.cover_photo.url}
+                                        alt={item.name}
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-gray-900 dark:text-white">
+                                        {item.name}
+                                    </h3>
+                                    <p className="text-sm text-purple-600 dark:text-purple-400">
+                                        {'group' in item ? 'Idol' : 'Group'}
+                                    </p>
+                                </div>
+                            </div>
+                        </Link>
                     </motion.div>
-                </Link>
-            ))}
+                ))}
+            </div>
         </motion.div>
     );
 }

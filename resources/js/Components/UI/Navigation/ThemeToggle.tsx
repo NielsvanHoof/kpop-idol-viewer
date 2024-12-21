@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { Button } from '@headlessui/react';
 import { MoonIcon, SunIcon } from 'lucide-react';
 
 interface ThemeToggleProps {
@@ -8,24 +8,16 @@ interface ThemeToggleProps {
 
 export default function ThemeToggle({ theme, toggleTheme }: ThemeToggleProps) {
     return (
-        <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+        <Button
             onClick={toggleTheme}
-            className="rounded-full bg-gray-100 p-2 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-            aria-label="Toggle Theme"
+            className="group rounded-full p-2 transition-colors hover:bg-purple-50 dark:hover:bg-purple-900/30"
+            aria-label="Toggle theme"
         >
-            <motion.span
-                initial={false}
-                animate={{ rotate: theme === 'dark' ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                {theme === 'light' ? (
-                    <MoonIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                ) : (
-                    <SunIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                )}
-            </motion.span>
-        </motion.button>
+            {theme === 'light' ? (
+                <MoonIcon className="h-5 w-5 text-gray-600 group-hover:text-purple-600 dark:text-gray-400" />
+            ) : (
+                <SunIcon className="h-5 w-5 text-gray-600 group-hover:text-purple-600 dark:text-gray-400" />
+            )}
+        </Button>
     );
 }

@@ -1,31 +1,16 @@
 import EmptyState from '@/Components/State/EmptyState';
 import { Group } from '@/types/models';
-import {
-    Button,
-    Dialog,
-    DialogPanel,
-    TabPanel,
-    Transition,
-    TransitionChild,
-} from '@headlessui/react';
+import { Button, Dialog, DialogPanel, TabPanel } from '@headlessui/react';
 import { motion } from 'framer-motion';
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
     FilterIcon,
-    HeartIcon,
     ImageIcon,
     StarIcon,
     XIcon,
 } from 'lucide-react';
-import { Fragment, useState } from 'react';
-
-interface GalleryImage {
-    url: string;
-    date: string;
-    type: 'concept' | 'behind' | 'event' | 'photoshoot';
-    likes: number;
-}
+import { useState } from 'react';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,7 +33,6 @@ const itemVariants = {
 
 export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
     const [selectedType, setSelectedType] = useState<string | null>(null);
 
     const imageTypes = [
@@ -69,14 +53,13 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
         const currentIndex = filteredGallery.findIndex(
             (photo) => photo.url === selectedImage,
         );
-        let newIndex =
+        const newIndex =
             direction === 'next'
                 ? (currentIndex + 1) % filteredGallery.length
                 : (currentIndex - 1 + filteredGallery.length) %
                   filteredGallery.length;
 
         setSelectedImage(filteredGallery[newIndex].url);
-        setSelectedImageIndex(newIndex);
     };
 
     return (
@@ -98,13 +81,11 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                                 </h2>
                             </div>
 
-                            {/* Mobile Dropdown for Filters */}
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                                 <span className="rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
                                     {filteredGallery?.length || 0} Photos
                                 </span>
 
-                                {/* Mobile: Scrollable container for filters */}
                                 <div className="relative">
                                     <div className="hide-scrollbar flex overflow-x-auto pb-2 sm:pb-0">
                                         <div className="flex gap-1 px-0.5">
@@ -132,7 +113,7 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                             </div>
                         </div>
 
-                        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+                        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
                             {filteredGallery?.map((photo, index) => (
                                 <motion.div
                                     key={index}
@@ -140,7 +121,6 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                                     className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg bg-gray-100"
                                     onClick={() => {
                                         setSelectedImage(photo.url);
-                                        setSelectedImageIndex(index);
                                     }}
                                 >
                                     <img
@@ -149,20 +129,14 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                                         loading="lazy"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                         <div className="absolute bottom-0 left-0 right-0 p-4">
                                             <div className="flex items-center justify-between text-white">
                                                 <span className="text-sm">
                                                     {new Date(
-                                                        photo.date ?? '',
+                                                        photo.date || '',
                                                     ).toLocaleDateString()}
                                                 </span>
-                                                <div className="flex items-center gap-1">
-                                                    <HeartIcon className="h-4 w-4" />
-                                                    <span className="text-sm">
-                                                        {photo.likes}
-                                                    </span>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -195,20 +169,11 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                             <StarIcon className="h-5 w-5 text-purple-500" />
                             Gallery Stats
                         </h3>
-                        <dl className="mt-4 space-y-4 sm:mt-6">
-                            {/* ... existing stats ... */}
+                        <dl className="mt-4 space-y-4">
                             <div className="flex justify-between border-b border-gray-100 pb-2 dark:border-gray-700">
                                 <dt className="text-sm text-gray-600 dark:text-gray-400">
                                     Most Liked
                                 </dt>
-                                <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {Math.max(
-                                        ...(group.gallery?.map(
-                                            (p) => p.likes,
-                                        ) || [0]),
-                                    ).toLocaleString()}{' '}
-                                    likes
-                                </dd>
                             </div>
                         </dl>
                     </motion.div>
@@ -247,61 +212,46 @@ export default function GroupProfileGalleryPanel({ group }: { group: Group }) {
                 </div>
             </div>
 
-            {/* Enhanced Image Modal */}
-            <Transition appear show={!!selectedImage} as={Fragment}>
-                <Dialog
-                    as="div"
-                    className="relative z-50"
-                    onClose={() => setSelectedImage(null)}
-                >
-                    {/* ... existing modal backdrop ... */}
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4">
-                            <TransitionChild
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
+            {/* Image Modal */}
+            <Dialog
+                as="div"
+                className="relative z-50"
+                open={!!selectedImage}
+                onClose={() => setSelectedImage(null)}
+            >
+                <div className="fixed inset-0 bg-black/80" />
+                <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4">
+                        <DialogPanel className="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl">
+                            <img
+                                src={selectedImage || ''}
+                                alt="Full size"
+                                className="h-full w-full object-contain"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-between px-4">
+                                <Button
+                                    onClick={() => navigateImage('prev')}
+                                    className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
+                                >
+                                    <ChevronLeftIcon className="h-6 w-6" />
+                                </Button>
+                                <Button
+                                    onClick={() => navigateImage('next')}
+                                    className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
+                                >
+                                    <ChevronRightIcon className="h-6 w-6" />
+                                </Button>
+                            </div>
+                            <Button
+                                onClick={() => setSelectedImage(null)}
+                                className="absolute right-4 top-4 rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
                             >
-                                <DialogPanel className="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl">
-                                    <img
-                                        src={selectedImage || ''}
-                                        alt="Full size"
-                                        className="h-full w-full object-contain"
-                                    />
-                                    <div className="absolute inset-0 flex items-center justify-between px-4">
-                                        <Button
-                                            onClick={() =>
-                                                navigateImage('prev')
-                                            }
-                                            className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
-                                        >
-                                            <ChevronLeftIcon className="h-6 w-6" />
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                navigateImage('next')
-                                            }
-                                            className="rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
-                                        >
-                                            <ChevronRightIcon className="h-6 w-6" />
-                                        </Button>
-                                    </div>
-                                    <Button
-                                        onClick={() => setSelectedImage(null)}
-                                        className="absolute right-4 top-4 rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/30"
-                                    >
-                                        <XIcon className="h-5 w-5" />
-                                    </Button>
-                                </DialogPanel>
-                            </TransitionChild>
-                        </div>
+                                <XIcon className="h-5 w-5" />
+                            </Button>
+                        </DialogPanel>
                     </div>
-                </Dialog>
-            </Transition>
+                </div>
+            </Dialog>
         </TabPanel>
     );
 }

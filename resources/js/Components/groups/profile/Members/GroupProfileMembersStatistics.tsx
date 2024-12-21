@@ -1,6 +1,6 @@
 import { Group } from '@/types/models';
+import { motion } from 'framer-motion';
 import { SparklesIcon } from 'lucide-react';
-import { motion } from 'motion/react';
 
 interface GroupProfileMembersStatisticsProps {
     group: Group;

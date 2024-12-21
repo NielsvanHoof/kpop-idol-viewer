@@ -1,6 +1,11 @@
 import { RecentlyViewedItem } from '@/types/models';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import EmptyState from '../State/EmptyState';
+
+interface RecentlyViewedSectionProps {
+    recentlyViewed: RecentlyViewedItem[];
+}
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -23,65 +28,81 @@ const itemVariants = {
 
 export default function RecentlyViewedSection({
     recentlyViewed,
-}: {
-    recentlyViewed: RecentlyViewedItem[];
-}) {
+}: RecentlyViewedSectionProps) {
+    console.log(recentlyViewed);
     return (
         <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="space-y-6"
         >
-            {recentlyViewed.map((item, index) => (
+            {recentlyViewed.length === 0 ? (
                 <motion.div
-                    key={item.id}
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                    className="group relative overflow-hidden rounded-xl bg-white p-6 shadow-lg ring-1 ring-gray-200 transition-all duration-300 hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="rounded-xl bg-white p-6 text-center shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
                 >
-                    <Link
-                        href={
-                            item.type === 'Idol'
-                                ? route('idols.show', item.slug)
-                                : route('groups.show', item.slug)
-                        }
-                        className="flex items-center gap-6"
-                    >
-                        <div className="relative h-24 w-24 overflow-hidden rounded-full">
-                            <img
-                                src={item.cover_photo.url}
-                                alt={`Profile picture of ${item.name}`}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                            />
-                        </div>
-
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                {item.name}
-                            </h3>
-
-                            <div className="mt-2 flex flex-wrap gap-2">
-                                <span
-                                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                        item.type === 'Idol'
-                                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
-                                            : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                                    }`}
-                                >
-                                    {item.type}
-                                </span>
-
-                                {item.type === 'Idol' && (
-                                    <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-                                        {item.group}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </Link>
+                    <EmptyState
+                        title="No recently viewed items"
+                        message="Start exploring to see your viewing history!"
+                        action={{
+                            label: 'Explore Now',
+                            onClick: () => route('idols.index'),
+                        }}
+                    />
                 </motion.div>
-            ))}
+            ) : (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {recentlyViewed.map((item) => (
+                        <motion.div
+                            key={item.id}
+                            variants={itemVariants}
+                            whileHover={{ y: -5 }}
+                            className="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-200 hover:shadow-md dark:bg-gray-800 dark:ring-gray-700"
+                        >
+                            <Link
+                                href={
+                                    item.type === 'Idol'
+                                        ? route(
+                                              'idols.show',
+                                              item.viewable.slug,
+                                          )
+                                        : route(
+                                              'groups.show',
+                                              item.viewable.slug,
+                                          )
+                                }
+                            >
+                                <div className="aspect-w-16 aspect-h-9 relative overflow-hidden">
+                                    <img
+                                        src={item.cover_photo.url}
+                                        alt={item.name}
+                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                </div>
+                                <div className="p-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-purple-900/20 dark:text-purple-300 dark:ring-purple-800">
+                                            {item.type === 'Idol'
+                                                ? 'Idol'
+                                                : 'Group'}
+                                        </span>
+                                        <time className="text-xs text-gray-500 dark:text-gray-400">
+                                            {new Date(
+                                                item.viewable.created_at,
+                                            ).toLocaleDateString()}
+                                        </time>
+                                    </div>
+                                    <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-white">
+                                        {item.name}
+                                    </h3>
+                                </div>
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
         </motion.div>
     );
 }

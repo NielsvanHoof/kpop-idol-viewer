@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Group;
+use App\Models\Article;
 use App\Models\Idol;
 use App\Models\RecentlyViewed;
 use App\Models\User;
@@ -23,10 +23,7 @@ class UserActivityService
     {
         $liked = $user->likes()
             ->with([
-                'group' => function (BelongsTo $query) {
-                    $query->withCount(['followers', 'likes'])
-                        ->with('media');
-                },
+                'group',
                 'likes',
                 'followers',
             ])
@@ -61,15 +58,12 @@ class UserActivityService
                             'group' => function ($query) {
                                 $query->withCount(['followers', 'likes']);
                             },
-                            'media',
-                        ],
-                        Group::class => [
-                            'media',
                         ],
                     ]);
                 },
             ])
             ->latest()
+            ->limit(3)
             ->get()
             ->transform(fn (RecentlyViewed $item) => $this->transformRecentlyViewedItem($item));
     }
@@ -81,8 +75,8 @@ class UserActivityService
             'id' => $item->id,
             'type' => class_basename($item->viewable_type),
             'name' => $item->viewable->name,
+            'viewable' => $item->viewable,
             'cover_photo' => $item->viewable->cover_photo ?? '/default-cover.jpg',
-            'group' => $item->viewable->group->name ?? 'N/A',
             'slug' => $item->viewable->slug,
         ];
     }
@@ -97,8 +91,28 @@ class UserActivityService
         ];
     }
 
-    public function getTimeLineEvents(User $user): Collection
+    /** @return Collection<int, Article> */
+    public function getTimeLineEvents(): Collection
     {
-        return collect([]);
+        return Article::query()->latest()->limit(5)->get();
+    }
+
+    /**
+     * @param array{
+     *   liked: Collection<int, Idol>,
+     *   followed: Collection<int, Idol>,
+     *   merged: Collection<int, Idol>
+     * } $interactions
+     * @param  Collection<int, RecentlyViewed>  $recentlyViewed
+     */
+    public function calculateActivityScore(array $interactions, Collection $recentlyViewed): int
+    {
+        $baseScore = 0;
+
+        $baseScore += $interactions['liked']->count();
+        $baseScore += $interactions['followed']->count() * 3;
+        $baseScore += $recentlyViewed->count();
+
+        return min($baseScore, 100); // Cap at 100
     }
 }

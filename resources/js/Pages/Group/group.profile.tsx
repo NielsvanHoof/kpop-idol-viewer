@@ -1,3 +1,4 @@
+import SEO from '@/Components/Common/SEO';
 import GroupProfileAwardsPanel from '@/Components/Groups/Profile/GroupProfileAwardsPanel';
 import GroupProfileDiscoveryPanel from '@/Components/Groups/Profile/GroupProfileDiscoveryPanel';
 import GroupProfileEventPanel from '@/Components/Groups/Profile/GroupProfileEventPanel';
@@ -5,7 +6,6 @@ import GroupProfileGalleryPanel from '@/Components/Groups/Profile/GroupProfileGa
 import GroupProfileHeroSection from '@/Components/Groups/Profile/GroupProfileHeroSection';
 import GroupProfileMembersPanel from '@/Components/Groups/Profile/GroupProfileMembersPanel';
 import GroupProfileOverViewPanel from '@/Components/Groups/Profile/GroupProfileOverViewPanel';
-import SEO from '@/Components/Common/SEO';
 import MainLayout from '@/Layouts/MainLayout';
 import { Group } from '@/types/models';
 import {
