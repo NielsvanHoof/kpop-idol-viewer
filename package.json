@@ -5,6 +5,7 @@
         "build": "tsc && vite build",
         "dev": "vite",
         "lint": "eslint resources/js/**/*.{js,jsx,ts,tsx} --ignore-pattern .github --fix",
+        "format": "prettier --write .",
         "prepare": "husky"
     },
     "devDependencies": {
