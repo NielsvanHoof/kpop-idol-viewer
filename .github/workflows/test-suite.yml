@@ -84,7 +84,7 @@ jobs:
         run: npm run lint
 
       - name: Run Prettier
-        run: npx prettier --check "**/*.{js,jsx,ts,tsx,css,md,json,yml,yaml}"
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx,css,md,json,yml,yaml}" --ignore-path .gitignore --ignore-pattern "public/**"
 
   static-analysis:
     needs: [backend-lint, frontend-lint]
