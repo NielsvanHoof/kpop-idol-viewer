@@ -6,7 +6,8 @@
         "dev": "vite",
         "lint": "eslint resources/js/**/*.{js,jsx,ts,tsx} --ignore-pattern .github --fix",
         "format": "prettier --write .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "prebuild": "find resources/js -type f -name '*.tsx' -o -name '*.ts' | xargs dirname | sort -u | xargs -I {} mkdir -p {}"
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.4",

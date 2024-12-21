@@ -77,6 +77,18 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Fix file casing
+        run: |
+          find resources/js -type f -exec sh -c '
+            file="$1"
+            dir=$(dirname "$file")
+            filename=$(basename "$file")
+            correct_case=$(echo "$filename" | tr "[:upper:]" "[:lower:]")
+            if [ "$filename" != "$correct_case" ]; then
+              mv "$file" "$dir/$correct_case"
+            fi
+          ' sh {} \;
+
       - name: Install Dependencies
         run: npm ci
 
