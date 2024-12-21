@@ -23,7 +23,7 @@ class GroupController extends Controller
                 perPage: $request->input('perPage', 10),
             );
 
-        return Inertia::render('Group/Group.overview', [
+        return Inertia::render('Group/GroupOverview', [
             'groups' => GroupResource::collection($groups),
         ]);
     }
@@ -56,7 +56,7 @@ class GroupController extends Controller
             $group->id
         );
 
-        return Inertia::render('Group/Group.profile', [
+        return Inertia::render('Group/GroupProfile', [
             'group' => GroupResource::make($group),
             'songs' => $songs ?? null,
             'artistInformation' => $artistInformation ?? null,

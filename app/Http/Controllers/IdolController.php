@@ -47,7 +47,7 @@ class IdolController extends Controller
                 perPage: $request->input('per_page', 12),
             );
 
-        return Inertia::render('Idol/Idol.overview', [
+        return Inertia::render('Idol/IdolOverview', [
             'idols' => fn () => Inertia::merge(IdolResource::collection($idols)),
         ]);
     }
@@ -74,7 +74,7 @@ class IdolController extends Controller
             $idol->id
         );
 
-        return Inertia::render('Idol/Idol.profile', [
+        return Inertia::render('Idol/IdolProfile', [
             'idol' => IdolResource::make($idol),
             'songs' => $songs ?? null,
             'artistInformation' => $artistInformation ?? null,
