@@ -33,7 +33,7 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-  lint:
+  backend-lint:
     needs: setup-cache
     runs-on: ubuntu-latest
     permissions:
@@ -65,8 +65,29 @@ jobs:
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
 
+  frontend-lint:
+    needs: setup-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+      - name: Run Prettier
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx,css,md,json,yml,yaml}"
+
   static-analysis:
-    needs: lint
+    needs: [backend-lint, frontend-lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -121,6 +142,18 @@ jobs:
 
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Build Frontend Assets
+        run: npm run build
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
