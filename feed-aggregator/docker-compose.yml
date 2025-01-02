@@ -1,0 +1,46 @@
+services:
+  feed-aggregator:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: kpop-feed-aggregator-dev
+    volumes:
+      - .:/app
+      - feed_data:/app/data
+      # Exclude directories that shouldn't be mounted
+      - /app/venv
+      - /app/__pycache__
+      - /app/*.pyc
+    env_file:
+      - .env
+    ports:
+      - "8000:8000" # Expose API port for direct access
+      - "5678:5678" # Port for debugger
+    networks:
+      - kpop-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    # Enable ptrace for debugger
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+
+networks:
+  kpop-network:
+    driver: bridge
+
+volumes:
+  feed_data:
+    driver: local

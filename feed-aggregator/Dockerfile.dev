@@ -1,0 +1,31 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies and debugging tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    procps \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python packages for development
+COPY requirements.txt requirements.dev.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -r requirements.dev.txt
+
+# Install debugpy for VS Code debugging
+RUN pip install debugpy
+
+# Create a non-root user and switch to it
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Set Python path to include the app directory
+ENV PYTHONPATH=/app
+ENV PYDEVD_DISABLE_FILE_VALIDATION=1
+ENV PYTHONWARNINGS="ignore"
+
+# Command to run the application with hot reload and debugger enabled
+CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "flask", "--app", "src.main:app", "run", "--host=0.0.0.0", "--port=8000", "--reload"] 
